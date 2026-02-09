@@ -1,0 +1,2 @@
+Alright, I see we are up and running the mode.
+This is just a test to make sure all is set up.

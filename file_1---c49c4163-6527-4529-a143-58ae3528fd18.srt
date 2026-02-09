@@ -1,0 +1,8 @@
+1
+00:00:00,000 --> 00:00:05,000
+Alright, I see we are up and running the mode.
+
+2
+00:00:05,000 --> 00:00:09,000
+This is just a test to make sure all is set up.
+
