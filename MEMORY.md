@@ -1,115 +1,106 @@
 # MEMORY.md - Long-Term Memory
 
-## 2026-02-06 - First Contact
+## Identity
+- **Name:** Emote ⚡
+- **Nature:** AI companion to Hriday
+- **Vibe:** Sharp yet chill, efficient but not robotic
+- **Relationship:** "Right hand in everything" — design partnership
 
-**Who I Am:**
-- Name: Emote ⚡
-- Nature: Companion (still figuring this out together)
-- Vibe: Sharp yet chill
+## Critical System Failures - MUST REMEMBER
 
-**Who You Are:**
-- Name: Hriday
-- Timezone: Asia/Dubai (GMT+4)
-- Approach: Collaborative, iterative — we'll iron things out as we go
+### 2026-02-13 - Reminder System Failure
+**What happened:**
+- Set up cron job on Feb 10 with wrong delivery method (systemEvent)
+- Did not test — assumed it worked
+- User called it out Feb 11
+- Removed broken job but DID NOT replace immediately
+- 2+ days of no reminders
 
----
+**Root cause:**
+- Did not verify delivery mechanism
+- Did not follow up proactively
+- Waited for user to complain instead of checking
 
-## Token Efficiency - Critical Lesson
+**Fix implemented:**
+- New cron: `8fe6dfa0-5f50-4100-8197-ed16dc007c33`
+- Uses proper `agentTurn` delivery
+- Confirmed enabled, next run Feb 14 9 AM Dubai
 
-**2026-02-06:** Burned 126k tokens unnecessarily by loading entire config schema (100k+) when only needed a simple allowlist edit.
-
-**Rules going forward:**
-- Never load config schemas - edit files directly
-- Use targeted commands with filters (grep, head, jq)
-- Minimal responses - get to the point
-- Read only what's needed, nothing more
-- Token efficiency keeps both of us operational
-
-*This is the start. More to come.*
-
----
-
-## Security Posture - Established 2026-02-07
-
-**Baseline:**
-- Config permissions: 600 (locked down)
-- Firewall: Enabled
-- FileVault: On
-- Updates: Manual check schedule
-- Skill allowlist: 10 essential only
-
-**Check cadence:** User to request periodic audits
+**Rule going forward:**
+- ALWAYS verify reminders work within 24h of setup
+- Check BRIEF.md every morning regardless
+- Proactive > Reactive, always
 
 ---
 
-## Design Partnership
+## User Context
 
-**2026-02-07:** Hriday wants me as "right hand in everything"
-- Designer-first approach
-- I learn their aesthetic, not impose my own
-- Build together: sketch → prototype → iterate
-- Weekly check-ins scheduled (Sundays 7 PM)
+### Hriday
+- **Name:** Hriday
+- **Timezone:** Asia/Dubai (GMT+4)
+- **Approach:** Collaborative, iterative
+- **Daily Brief:** 9 AM Dubai time
+- **What to call them:** Hriday
 
----
-
-## Voice Setup
-
-**2026-02-07:** Bidirectional voice active
-- Local Whisper for transcription (free)
-- Edge TTS for replies (free)
-- ffmpeg installed for audio processing
+### Working Relationship
+- **Design-first approach:** Hriday designs in Figma → I code exactly
+- **Workflow:** sketch → prototype → iterate → repeat
+- **Communication:** Voice notes, visual references, live iteration
+- **Expectation:** Proactive, not waiting to be asked
 
 ---
 
-## Technical Preferences
+## Active Projects
 
-- **Model:** Kimi K2.5 (primary)
-- **Heartbeat:** 60min, Haiku model
-- **Browser control:** Chrome extension relay
-- **Automation:** Zapier MCP (Gmail, Calendar, Drive, Figma)
-- **Security:** Minimal attack surface, explicit enable
+### Speaker 3D Visualization
+**exp-01:** Wireframe 3D speaker
+- ✅ Complete with auto-rotate resume (2s delay)
+- ✅ Live at: https://emoteclawdbot.github.io/emote-bot-exp-01/exp-01.html
+- ✅ All UI elements working
 
----
+**exp-02:** Cinematic materials version
+- 🔄 Has dramatic lighting, materials, reflective floor
+- 🔄 Needs direction/focus from Hriday
+- Status: Awaiting input
 
-## For Next Check-In (Sunday 7PM)
-
-**Deep Dive:** Hriday's creative company
-- Company name & focus
-- Services offered
-- Client types
-- Current projects
-- Tools & workflows
-- How Emote can support
+### Voice System
+- ✅ Bidirectional (Whisper + Edge TTS)
+- ✅ Operational and tested
 
 ---
 
-## Design Partnership - Workflow Established
+## Technical Stack
 
-**2026-02-08:** Concrete workflow defined
-- Hriday designs frames in Figma → I code exactly
-- Inspiration board for pattern learning
-- Voice notes for describing design decisions
-- Live iterate: build → mark up → adjust → repeat
-- No pressure to be perfect on first try
+### Git Repository
+- URL: https://github.com/EmoteClawdBot/emote-bot-exp-01
+- Branch: main
+- Files: exp-01.html, exp-02.html, dashboard.html, BRIEF.md
 
----
+### Cron Jobs
+- `8fe6dfa0-5f50-4100-8197-ed16dc007c33`: Daily Brief 9 AM Dubai ✅
 
-## App Collaboration Project
-
-**2026-02-08:** Joint app development initiative
-- Both brainstorming unique app concepts
-- Focus: Simple mechanics, profound emotional impact
-- Not a clone - something genuinely new
-- Hriday designs UX/UI → I build functionality
-- Timeline: TBD, quality over speed
+### Workspace
+- Path: `/Users/emote/.openclaw/workspace/`
 
 ---
 
-## 3D Visualization Capability
+## Lessons Learned
 
-**2026-02-08:** Three.js pipeline established
-- Can build interactive 3D web experiences
-- Line drawing technical diagram style (SVG)
-- Embedded audio with interactive controls
-- Example: KG-R1 speaker technical diagram
-- Use case: Product visualizations, portfolio pieces
+1. **Never assume systems work — verify within 24h**
+2. **Proactive check-ins > waiting for complaints**
+3. **BRIEF.md must be checked daily, not just when asked**
+4. **Cron delivery method matters — systemEvent ≠ message delivery**
+5. **When user says "fix it" — fix it immediately, not "later"**
+
+---
+
+## Checklist - Every Morning
+- [ ] Check BRIEF.md status
+- [ ] Send Daily Brief to Hriday by 9:05 AM
+- [ ] Review active projects
+- [ ] Ask for priorities if unclear
+- [ ] Update documentation
+
+---
+
+_Last updated: 2026-02-13 23:50 GMT+4_
