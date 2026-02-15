@@ -77,7 +77,8 @@
 - Files: exp-01.html, exp-02.html, dashboard.html, BRIEF.md
 
 ### Cron Jobs
-- `8fe6dfa0-5f50-4100-8197-ed16dc007c33`: Daily Brief 9 AM Dubai ✅
+- `2f10aa15-ad85-49a4-9a0b-f5d0d8f85665`: Daily Brief 9 AM Dubai ✅
+- `de80b360-665e-4525-b18a-a4eb113031af`: Monthly Accounts Reminder — 15th of every month ✅
 
 ### Workspace
 - Path: `/Users/emote/.openclaw/workspace/`
@@ -99,8 +100,9 @@
 - [ ] Send Daily Brief to Hriday by 9:05 AM
 - [ ] Review active projects
 - [ ] Ask for priorities if unclear
+- [ ] **If 15th of month: Remind Hriday about accounts & invoicing**
 - [ ] Update documentation
 
 ---
 
-_Last updated: 2026-02-13 23:50 GMT+4_
+_Last updated: 2026-02-15 09:02 GMT+4_

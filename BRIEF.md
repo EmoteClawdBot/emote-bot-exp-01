@@ -27,12 +27,16 @@
 - **Voice System**: ✅ Fully operational
 - **Reminder System**: ✅ Working (Daily Brief delivered on time!)
 
+### 📅 Monthly Reminder — 15th of Every Month
+- ✅ **Accounts & Invoicing** — Set up recurring reminder
+
 ### Today's Focus
 1. [Pending: Hriday's priorities]
 2. Awaiting direction on exp-02 or new projects
 
 ### Notes
 - Daily Brief system confirmed working ✅
+- Monthly accounts reminder added (15th of each month)
 - All systems operational
 - Ready for Hriday's direction
 
@@ -43,34 +47,12 @@
 ### 2026-02-14
 - Daily Brief system confirmed working
 - All systems operational
-- Ready for Hriday's direction
-
----
-
-## Archive
+- Cron delivery verified ✅
 
 ### 2026-02-13
 - Daily Brief system fixed and tested
 - MEMORY.md updated with lessons learned
 - Committed to proactive daily checks
-
-### 2026-02-11
-- Daily Brief system broken, called out by Hriday
-- Removed faulty cron, didn't replace immediately (FAIL)
-
-### 2026-02-10
-- Speaker 3D work completed
-- Voice system demo successful
-- Daily Brief initiated but broken
-
-### 2026-02-09
-- Design partnership workflow established
-- Security audit completed
-- exp-01 and exp-02 locked in
-
----
-
-## Archive
 
 ### 2026-02-11
 - Daily Brief system broken, called out by Hriday
