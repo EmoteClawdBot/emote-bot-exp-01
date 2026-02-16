@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" width="1200" height="1600">
+  <defs>
+    <style>
+      .cut { fill:none; stroke:#FF0000; stroke-width:0.5; }
+      .fold { fill:none; stroke:#0000FF; stroke-width:0.5; stroke-dasharray:3,3; }
+      .guide { fill:none; stroke:#00AA00; stroke-width:0.25; stroke-dasharray:1,2; }
+      .text { font-family:Arial, sans-serif; font-size:10px; fill:#333; }
+      .title { font-family:Arial, sans-serif; font-size:14px; font-weight:bold; fill:#000; }
+      .box-label { font-family:Arial, sans-serif; font-size:12px; font-weight:bold; fill:#333; }
+    </style>
+  </defs>
+  
+  <!-- Title -->
+  <text x="600" y="30" text-anchor="middle" class="title">GBGT BOX - A Lovely Atmosphere</text>
+  <text x="600" y="50" text-anchor="middle" class="text">5 Nested Rigid Boxes - Atmospheric Layers</text>
+  
+  <!-- BOX 1: EXOSPHERE (Largest) - 200mm cube -->
+  <g transform="translate(50, 80)">
+    <text x="0" y="-10" class="box-label">BOX 1: EXOSPHERE (200mm cube)</text>
+    
+    <!-- Base piece -->
+    <rect x="0" y="0" width="200" height="200" class="cut"/>
+    <rect x="0" y="-40" width="200" height="40" class="cut"/>
+    <rect x="0" y="200" width="200" height="40" class="cut"/>
+    <rect x="-40" y="0" width="40" height="200" class="cut"/>
+    <rect x="200" y="0" width="40" height="200" class="cut"/>
+    
+    <!-- Fold lines -->
+    <line x1="0" y1="0" x2="0" y2="200" class="fold"/>
+    <line x1="200" y1="0" x2="200" y2="200" class="fold"/>
+    <line x1="0" y1="0" x2="200" y2="0" class="fold"/>
+    <line x1="0" y1="200" x2="200" y2="200" class="fold"/>
+    
+    <!-- Corner flaps -->
+    <polygon points="-40,0 0,0 0,-40" class="cut"/>
+    <polygon points="200,0 240,0 200,-40" class="cut"/>
+    <polygon points="-40,200 0,200 0,240" class="cut"/>
+    <polygon points="200,200 240,200 200,240" class="cut"/>
+    
+    <!-- Labels -->
+    <text x="100" y="100" text-anchor="middle" class="text">BASE</text>
+    <text x="-20" y="100" text-anchor="middle" class="text" transform="rotate(-90 -20 100)">SIDE</text>
+    <text x="220" y="100" text-anchor="middle" class="text" transform="rotate(90 220 100)">SIDE</text>
+    <text x="100" y="-20" text-anchor="middle" class="text">SIDE</text>
+    <text x="100" y="220" text-anchor="middle" class="text">SIDE</text>
+    
+    <!-- Lid piece (offset to right) -->
+    <g transform="translate(300, 0)">
+      <rect x="0" y="0" width="204" height="204" class="cut"/>
+      <rect x="0" y="-30" width="204" height="30" class="cut"/>
+      <rect x="0" y="204" width="204" height="30" class="cut"/>
+      <rect x="-30" y="0" width="30" height="204" class="cut"/>
+      <rect x="204" y="0" width="30" height="204" class="cut"/>
+      
+      <line x1="0" y1="0" x2="0" y2="204" class="fold"/>
+      <line x1="204" y1="0" x2="204" y2="204" class="fold"/>
+      <line x1="0" y1="0" x2="204" y2="0" class="fold"/>
+      <line x1="0" y1="204" x2="204" y2="204" class="fold"/>
+      
+      <polygon points="-30,0 0,0 0,-30" class="cut"/>
+      <polygon points="204,0 234,0 204,-30" class="cut"/>
+      <polygon points="-30,204 0,204 0,234" class="cut"/>
+      <polygon points="204,204 234,204 204,234" class="cut"/>
+      
+      <text x="102" y="102" text-anchor="middle" class="text">LID (2mm larger)</text>
+    </g>
+  </g>
+  
+  <!-- BOX 2: THERMOSPHERE - 175mm cube -->
+  <g transform="translate(50, 380)">
+    <text x="0" y="-10" class="box-label">BOX 2: THERMOSPHERE (175mm cube)</text>
+    
+    <rect x="0" y="0" width="175" height="175" class="cut"/>
+    <rect x="0" y="-35" width="175" height="35" class="cut"/>
+    <rect x="0" y="175" width="175" height="35" class="cut"/>
+    <rect x="-35" y="0" width="35" height="175" class="cut"/>
+    <rect x="175" y="0" width="35" height="175" class="cut"/>
+    
+    <line x1="0" y1="0" x2="0" y2="175" class="fold"/>
+    <line x1="175" y1="0" x2="175" y2="175" class="fold"/>
+    <line x1="0" y1="0" x2="175" y2="0" class="fold"/>
+    <line x1="0" y1="175" x2="175" y2="175" class="fold"/>
+    
+    <polygon points="-35,0 0,0 0,-35" class="cut"/>
+    <polygon points="175,0 210,0 175,-35" class="cut"/>
+    <polygon points="-35,175 0,175 0,210" class="cut"/>
+    <polygon points="175,175 210,175 175,210" class="cut"/>
+    
+    <text x="87.5" y="87.5" text-anchor="middle" class="text">BASE</text>
+    
+    <g transform="translate(260, 0)">
+      <rect x="0" y="0" width="179" height="179" class="cut"/>
+      <rect x="0" y="-28" width="179" height="28" class="cut"/>
+      <rect x="0" y="179" width="179" height="28" class="cut"/>
+      <rect x="-28" y="0" width="28" height="179" class="cut"/>
+      <rect x="179" y="0" width="28" height="179" class="cut"/>
+      
+      <line x1="0" y1="0" x2="0" y2="179" class="fold"/>
+      <line x1="179" y1="0" x2="179" y2="179" class="fold"/>
+      <line x1="0" y1="0" x2="179" y2="0" class="fold"/>
+      <line x1="0" y1="179" x2="179" y2="179" class="fold"/>
+      
+      <polygon points="-28,0 0,0 0,-28" class="cut"/>
+      <polygon points="179,0 207,0 179,-28" class="cut"/>
+      <polygon points="-28,179 0,179 0,207" class="cut"/>
+      <polygon points="179,179 207,179 179,207" class="cut"/>
+      
+      <text x="89.5" y="89.5" text-anchor="middle" class="text">LID</text>
+    </g>
+  </g>
+  
+  <!-- BOX 3: MESOSPHERE - 150mm cube -->
+  <g transform="translate(50, 650)">
+    <text x="0" y="-10" class="box-label">BOX 3: MESOSPHERE (150mm cube)</text>
+    
+    <rect x="0" y="0" width="150" height="150" class="cut"/>
+    <rect x="0" y="-30" width="150" height="30" class="cut"/>
+    <rect x="0" y="150" width="150" height="30" class="cut"/>
+    <rect x="-30" y="0" width="30" height="150" class="cut"/>
+    <rect x="150" y="0" width="30" height="150" class="cut"/>
+    
+    <line x1="0" y1="0" x2="0" y2="150" class="fold"/>
+    <line x1="150" y1="0" x2="150" y2="150" class="fold"/>
+    <line x1="0" y1="0" x2="150" y2="0" class="fold"/>
+    <line x1="0" y1="150" x2="150" y2="150" class="fold"/>
+    
+    <polygon points="-30,0 0,0 0,-30" class="cut"/>
+    <polygon points="150,0 180,0 150,-30" class="cut"/>
+    <polygon points="-30,150 0,150 0,180" class="cut"/>
+    <polygon points="150,150 180,150 150,180" class="cut"/>
+    
+    <text x="75" y="75" text-anchor="middle" class="text">BASE</text>
+    
+    <g transform="translate(230, 0)">
+      <rect x="0" y="0" width="154" height="154" class="cut"/>
+      <rect x="0" y="-25" width="154" height="25" class="cut"/>
+      <rect x="0" y="154" width="154" height="25" class="cut"/>
+      <rect x="-25" y="0" width="25" height="154" class="cut"/>
+      <rect x="154" y="0" width="25" height="154" class="cut"/>
+      
+      <line x1="0" y1="0" x2="0" y2="154" class="fold"/>
+      <line x1="154" y1="0" x2="154" y2="154" class="fold"/>
+      <line x1="0" y1="0" x2="154" y2="0" class="fold"/>
+      <line x1="0" y1="154" x2="154" y2="154" class="fold"/>
+      
+      <polygon points="-25,0 0,0 0,-25" class="cut"/>
+      <polygon points="154,0 179,0 154,-25" class="cut"/>
+      <polygon points="-25,154 0,154 0,179" class="cut"/>
+      <polygon points="154,154 179,154 154,179" class="cut"/>
+      
+      <text x="77" y="77" text-anchor="middle" class="text">LID</text>
+    </g>
+  </g>
+  
+  <!-- BOX 4: STRATOSPHERE - 125mm cube -->
+  <g transform="translate(50, 900)">
+    <text x="0" y="-10" class="box-label">BOX 4: STRATOSPHERE (125mm cube)</text>
+    
+    <rect x="0" y="0" width="125" height="125" class="cut"/>
+    <rect x="0" y="-25" width="125" height="25" class="cut"/>
+    <rect x="0" y="125" width="125" height="25" class="cut"/>
+    <rect x="-25" y="0" width="25" height="125" class="cut"/>
+    <rect x="125" y="0" width="25" height="125" class="cut"/>
+    
+    <line x1="0" y1="0" x2="0" y2="125" class="fold"/>
+    <line x1="125" y1="0" x2="125" y2="125" class="fold"/>
+    <line x1="0" y1="0" x2="125" y2="0" class="fold"/>
+    <line x1="0" y1="125" x2="125" y2="125" class="fold"/>
+    
+    <polygon points="-25,0 0,0 0,-25" class="cut"/>
+    <polygon points="125,0 150,0 125,-25" class="cut"/>
+    <polygon points="-25,125 0,125 0,150" class="cut"/>
+    <polygon points="125,125 150,125 125,150" class="cut"/>
+    
+    <text x="62.5" y="62.5" text-anchor="middle" class="text">BASE</text>
+    
+    <g transform="translate(200, 0)">
+      <rect x="0" y="0" width="129" height="129" class="cut"/>
+      <rect x="0" y="-22" width="129" height="22" class="cut"/>
+      <rect x="0" y="129" width="129" height="22" class="cut"/>
+      <rect x="-22" y="0" width="22" height="129" class="cut"/>
+      <rect x="129" y="0" width="22" height="129" class="cut"/>
+      
+      <line x1="0" y1="0" x2="0" y2="129" class="fold"/>
+      <line x1="129" y1="0" x2="129" y2="129" class="fold"/>
+      <line x1="0" y1="0" x2="129" y2="0" class="fold"/>
+      <line x1="0" y1="129" x2="129" y2="129" class="fold"/>
+      
+      <polygon points="-22,0 0,0 0,-22" class="cut"/>
+      <polygon points="129,0 151,0 129,-22" class="cut"/>
+      <polygon points="-22,129 0,129 0,151" class="cut"/>
+      <polygon points="129,129 151,129 129,151" class="cut"/>
+      
+      <text x="64.5" y="64.5" text-anchor="middle" class="text">LID</text>
+    </g>
+  </g>
+  
+  <!-- BOX 5: TROPOSPHERE (Innermost) - 100mm cube -->
+  <g transform="translate(50, 1120)">
+    <text x="0" y="-10" class="box-label">BOX 5: TROPOSPHERE - Contains Ginkgo Seed (100mm cube)</text>
+    
+    <rect x="0" y="0" width="100" height="100" class="cut"/>
+    <rect x="0" y="-20" width="100" height="20" class="cut"/>
+    <rect x="0" y="100" width="100" height="20" class="cut"/>
+    <rect x="-20" y="0" width="20" height="100" class="cut"/>
+    <rect x="100" y="0" width="20" height="100" class="cut"/>
+    
+    <line x1="0" y1="0" x2="0" y2="100" class="fold"/>
+    <line x1="100" y1="0" x2="100" y2="100" class="fold"/>
+    <line x1="0" y1="0" x2="100" y2="0" class="fold"/>
+    <line x1="0" y1="100" x2="100" y2="100" class="fold"/>
+    
+    <polygon points="-20,0 0,0 0,-20" class="cut"/>
+    <polygon points="100,0 120,0 100,-20" class="cut"/>
+    <polygon points="-20,100 0,100 0,120" class="cut"/>
+    <polygon points="100,100 120,100 100,120" class="cut"/>
+    
+    <text x="50" y="50" text-anchor="middle" class="text">GINKGO</text>
+    <text x="50" y="65" text-anchor="middle" class="text">SEED</text>
+    
+    <g transform="translate(170, 0)">
+      <rect x="0" y="0" width="104" height="104" class="cut"/>
+      <rect x="0" y="-18" width="104" height="18" class="cut"/>
+      <rect x="0" y="104" width="104" height="18" class="cut"/>
+      <rect x="-18" y="0" width="18" height="104" class="cut"/>
+      <rect x="104" y="0" width="18" height="104" class="cut"/>
+      
+      <line x1="0" y1="0" x2="0" y2="104" class="fold"/>
+      <line x1="104" y1="0" x2="104" y2="104" class="fold"/>
+      <line x1="0" y1="0" x2="104" y2="0" class="fold"/>
+      <line x1="0" y1="104" x2="104" y2="104" class="fold"/>
+      
+      <polygon points="-18,0 0,0 0,-18" class="cut"/>
+      <polygon points="104,0 122,0 104,-18" class="cut"/>
+      <polygon points="-18,104 0,104 0,122" class="cut"/>
+      <polygon points="104,104 122,104 104,122" class="cut"/>
+      
+      <text x="52" y="52" text-anchor="middle" class="text">LID</text>
+    </g>
+  </g>
+  
+  <!-- Legend -->
+  <g transform="translate(50, 1300)">
+    <text x="0" y="0" class="box-label">LEGEND</text>
+    
+    <line x1="0" y1="20" x2="40" y2="20" class="cut"/>
+    <text x="50" y="24" class="text">CUT LINE (Red)</text>
+    
+    <line x1="0" y1="40" x2="40" y2="40" class="fold"/>
+    <text x="50" y="44" class="text">FOLD LINE - Blue Dashed</text>
+    
+    <text x="0" y="70" class="text">MATERIAL: 2mm rigid board (greyboard + paper wrap)</text>
+    <text x="0" y="85" class="text">CONSTRUCTION: Separate lid + base for each box</text>
+    <text x="0" y="100" class="text">ASSEMBLY: Glue corner flaps, fold sides up</text>
+    <text x="0" y="115" class="text">NESTING: Each box fits inside the next (4mm clearance)</text>
+  </g>
+  
+  <!-- Size Reference -->
+  <g transform="translate(50, 1450)">
+    <text x="0" y="0" class="box-label">SIZE PROGRESSION (Cube Dimensions)</text>
+    <text x="0" y="20" class="text">Box 1 (Exosphere):    200mm outer | 196mm inner | Wall: 40mm height</text>
+    <text x="0" y="35" class="text">Box 2 (Thermosphere): 175mm outer | 171mm inner | Wall: 35mm height</text>
+    <text x="0" y="50" class="text">Box 3 (Mesosphere):   150mm outer | 146mm inner | Wall: 30mm height</text>
+    <text x="0" y="65" class="text">Box 4 (Stratosphere): 125mm outer | 121mm inner | Wall: 25mm height</text>
+    <text x="0" y="80" class="text">Box 5 (Troposphere):  100mm outer | 96mm inner  | Wall: 20mm height</text>
+    <text x="0" y="100" class="text">* Lids are 4mm larger than base to create overlap fit</text>
+  </g>
+</svg>
