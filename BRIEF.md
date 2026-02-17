@@ -18,6 +18,48 @@
 
 ---
 
+## Today — 2026-02-17
+
+### Active Projects
+- **Speaker 3D Visualization**
+  - exp-01: ✅ Complete (wireframe, auto-rotate, live)
+  - exp-02: 🔄 Awaiting direction (cinematic version ready)
+- **GBGT Box Dieline**: ✅ Created and pushed (5 nested atmospheric boxes)
+- **Voice System**: ✅ Fully operational
+- **Reminder System**: ❌ FAILED — cron fires but I'm not sending the brief
+
+### Today's Focus
+1. **FIX Daily Brief delivery** — I'm waking up but not sending
+2. Hriday's priorities
+
+### Notes
+- Daily Brief FAILED again — cron works, I'm not acting on it
+- GBGT Box dieline completed yesterday
+- Need to be more disciplined about acting on cron wake-ups
+
+---
+
+## Today — 2026-02-16
+
+### Active Projects
+- **Speaker 3D Visualization**
+  - exp-01: ✅ Complete (wireframe, auto-rotate, live)
+  - exp-02: 🔄 Awaiting direction (cinematic version ready)
+- **Voice System**: ✅ Fully operational
+- **Reminder System**: ✅ Daily Brief + Monthly accounts both working
+
+### Today's Focus
+1. **New week priorities** — What should we tackle?
+2. exp-02 direction or next project
+
+### Notes
+- Daily Brief delivered on time ✅
+- One untracked memory file (2026-02-14.md) — commit or review?
+- All systems operational
+- Ready for Hriday's direction
+
+---
+
 ## Today — 2026-02-15
 
 ### Active Projects
