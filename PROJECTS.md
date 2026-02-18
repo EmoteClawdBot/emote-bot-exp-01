@@ -19,38 +19,30 @@
 └─────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────┐
-│  🔒 SECURITY POSTURE                 [██████████] 100% │
-│  ├─ Config permissions (600)         ✅ Locked          │
-│  ├─ Firewall enabled                 ✅ Active          │
-│  ├─ FileVault encryption             ✅ On              │
-│  └─ Skill allowlist (10)             ✅ Restricted     │
+│  🎨 3D SPEAKER — emote.bot.exp(01)    [██████████] 100% │
+│  ├─ Wireframe visualization          ✅ Complete        │
+│  ├─ Auto-rotate resume               ✅ Working         │
+│  ├─ Procedural audio                 ✅ Working         │
+│  ├─ GitHub Pages live                ✅ Deployed        │
+│  └─ Version committed                ✅ 1a0c9f5         │
 └─────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────┐
-│  🌐 BROWSER CONTROL                  [██████████] 100% │
-│  ├─ Chrome extension relay           ✅ Installed       │
-│  ├─ Tab control & snapshots          ✅ Working         │
-│  └─ Unsplash image curation          ✅ Done            │
+│  🎨 3D SPEAKER — emote.bot.exp(02)    [████░░░░░░] 40%  │
+│  ├─ Cinematic materials              ✅ Done            │
+│  ├─ Dramatic lighting                ✅ Done            │
+│  ├─ Reflective floor                 ✅ Done            │
+│  └─ Hriday's direction               🟡 Awaiting        │
 └─────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────┐
-│  🔌 AUTOMATION STACK                 [██████████] 100% │
-│  ├─ Zapier MCP (Gmail/Calendar)      ✅ Connected       │
-│  ├─ Google Drive integration         ✅ Active          │
-│  └─ Figma API access                 ✅ Ready           │
+│  📦 GBGT BOX DIELINE                  [██████████] 100% │
+│  ├─ 5 nested atmospheric boxes       ✅ Complete        │
+│  ├─ SVG dieline with cut/fold lines  ✅ Done            │
+│  ├─ Size progression (100-200mm)     ✅ Documented      │
+│  └─ GitHub push                      ✅ ecb2cae         │
 └─────────────────────────────────────────────────────────┘
 ```
-
----
-
-┌─────────────────────────────────────────────────────────┐
-│  🎨 3D SPEAKER — emote.bot.exp(01)    [██████████] 100% │
-│  ├─ KG-R1 wireframe visualization    ✅ Complete        │
-│  ├─ Line-drawing aesthetic           ✅ Done            │
-│  ├─ Procedural generative audio      ✅ Working         │
-│  ├─ Interactive 3D controls          ✅ Drag/zoom       │
-│  └─ Version 1 saved                  ✅ v1 archived     │
-└─────────────────────────────────────────────────────────┘
 
 ---
 
@@ -58,10 +50,10 @@
 
 | Priority | Project | Vibe | Est. |
 |----------|---------|------|------|
-| ⭐ High | Learn Hriday's aesthetic | Visual study | Ongoing |
-| ⭐ High | First collaborative build | TBD | — |
-| Medium | Design workflow automation | Tools | — |
-| Low | Explore more integrations | Expansion | — |
+| ⭐ High | Life companion app | One Year inspired | Researching |
+| ⭐ High | exp-02 direction | Cinematic speaker | Awaiting Hriday |
+| Medium | Daily Brief system | Automation | 🔄 Fixing |
+| Medium | Design workflow tools | Efficiency | — |
 
 ---
 
@@ -69,55 +61,50 @@
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  🎨 DESIGN PARTNERSHIP                                 │
-│                                                         │
-│  "Right hand in everything"                             │
+│  🎨 DESIGN PARTNERSHIP — "Tools that make life better"  │
 │                                                         │
 │  Status: 🔥 ACTIVE                                      │
 │                                                         │
-│  • You bring vision, taste, aesthetic intuition        │
-│  • I bring technical execution, iteration, tools       │
-│  • Together: sketch → prototype → build → refine       │
+│  • You: Vision, design, emotional impact               │
+│  • Me: Technical research, prototyping, building       │
+│  • Together: Concept → Design → Build → Launch         │
 │                                                         │
-│  Next: Deep dive on creative company (Feb 15)     │
+│  Next: Life companion app research (One Year benchmark)│
 └─────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 📊 System Health
+## ⚠️ Systems Status
 
 ```
-Wellness    [████████████████████] 100%  🟢
-Security    [████████████████████] 100%  🟢
 Voice       [████████████████████] 100%  🟢
 3D Viz      [████████████████████] 100%  🟢
-Tools       [████████████████████] 100%  🟢
+Packaging   [████████████████████] 100%  🟢
+Reminders   [████████░░░░░░░░░░░░] 40%   🟡  (5 failures, fixing)
 ```
-
----
 
 ---
 
 ## 🎨 Completed Builds
 
-| Project | File | Status |
-|---------|------|--------|
-| KG-R1 3D Speaker | `kg-r1-3d-wireframe.html` | ✅ v1 complete |
-| | `versions/kg-r1-exp-01-v1.html` | ✅ archived |
+| Project | File/Location | Status | Commit |
+|---------|--------------|--------|--------|
+| KG-R1 3D Speaker | `exp-01.html` | ✅ Live | 1a0c9f5 |
+| Cinematic Speaker | `exp-02.html` | 🟡 Ready | d522cf2 |
+| GBGT Box Dieline | `gbgt-box-dieline.svg` | ✅ Done | ecb2cae |
+| Dashboard | `dashboard.html` | ✅ Updated | — |
 
 ## 🔗 Quick Links
 
 | Resource | Location |
 |----------|----------|
+| Live 3D Speaker | https://emoteclawdbot.github.io/emote-bot-exp-01/exp-01.html |
+| GitHub Repo | https://github.com/EmoteClawdBot/emote-bot-exp-01 |
 | Memory & Context | `MEMORY.md` |
+| Daily Brief | `BRIEF.md` |
 | Daily Logs | `memory/YYYY-MM-DD.md` |
-| Security Config | `~/.openclaw/openclaw.json` |
-| Browser Extension | `~/Desktop/openclaw-extension` |
-| Weekly Check-in | Sundays 7 PM (Dubai) |
-| 3D Speaker v1 | `versions/kg-r1-exp-01-v1.html` |
 
 ---
 
-*Visual style inspired by clean timeline UIs 🎨*  
-*Last sync: 2026-02-09*
+*Last sync: 2026-02-18* ⚡
