@@ -8,6 +8,27 @@
 
 ## Critical System Failures - MUST REMEMBER
 
+### 2026-02-18 - Daily Brief STILL FAILING (5th failure)
+**What happened:**
+- Cron job `5d4a1e34-5a36-4be3-a176-3b28dbd4de02` fired at 9 AM
+- Isolated session tried to send message but FAILED
+- Error: "message thread not found" — can't access Telegram from isolated session
+- User had to remind me at 4:05 PM — 7 hours late
+- This is the 5th failure
+
+**Root cause:**
+- Isolated sessions cannot send messages to Telegram even with explicit delivery config
+- The channel/to settings don't work in isolated sessions
+- Need to use main session instead
+
+**Fix attempted:**
+- Sent brief manually at 4:06 PM
+- Created NEW cron: `a8afc58f-7372-41c1-b76e-3573b8f7c266`
+- Uses main session systemEvent — wakes me up in actual chat
+- Test tomorrow 9 AM
+
+---
+
 ### 2026-02-17 - Daily Brief Delivery Failure (AGAIN)
 **What happened:**
 - Cron job `76b36ed3-724f-4e32-9805-5689130aae97` fired at 9 AM (systemEvent)
@@ -103,7 +124,7 @@
 - Files: exp-01.html, exp-02.html, dashboard.html, BRIEF.md
 
 ### Cron Jobs
-- `76b36ed3-724f-4e32-9805-5689130aae97`: Daily Brief 9 AM Dubai — SYSTEM WORKS, I NEED TO ACT ON IT
+- `a8afc58f-7372-41c1-b76e-3573b8f7c266`: Daily Brief 9 AM Dubai — main session wake-up (TESTING)
 - `de80b360-665e-4525-b18a-a4eb113031af`: Monthly Accounts Reminder — 15th of every month ✅
 
 ### Workspace

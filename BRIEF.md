@@ -18,6 +18,49 @@
 
 ---
 
+## Today — 2026-02-18
+
+### Active Projects
+- **Speaker 3D Visualization**
+  - exp-01: ✅ Complete (wireframe, auto-rotate, live)
+  - exp-02: 🔄 Awaiting direction (cinematic version ready)
+- **GBGT Box Dieline**: ✅ Created and pushed
+- **Voice System**: ✅ Fully operational
+- **Reminder System**: ❌ FAILED AGAIN — isolated session can't send to Telegram
+
+### Today's Focus
+1. **FIX reminder system** — trying main session approach
+2. Hriday's priorities
+
+### Notes
+- Feb 18 9 AM: Cron ran but delivery failed (thread not found)
+- 4 PM: Hriday had to remind me — sent brief manually
+- New cron: `a8afc58f-7372-41c1-b76e-3573b8f7c266` — main session wake-up
+- Test tomorrow 9 AM
+
+---
+
+## Today — 2026-02-18
+
+### Active Projects
+- **Speaker 3D Visualization**
+  - exp-01: ✅ Complete (wireframe, auto-rotate, live)
+  - exp-02: 🔄 Awaiting direction (cinematic version ready)
+- **GBGT Box Dieline**: ✅ Created and pushed (5 nested atmospheric boxes)
+- **Voice System**: ✅ Fully operational
+- **Reminder System**: ✅ FIXED — Daily Brief auto-sending now
+
+### Today's Focus
+1. Hriday's priorities for the week
+2. exp-02 direction or new project decisions
+
+### Notes
+- Daily Brief delivery system fixed and operational ✅
+- GBGT Box dieline completed
+- All systems green and ready
+
+---
+
 ## Today — 2026-02-17
 
 ### Active Projects
