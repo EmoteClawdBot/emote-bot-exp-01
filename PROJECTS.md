@@ -93,7 +93,7 @@ Reminders   [████████░░░░░░░░░░░░] 40%  
 | KG-R1 3D Speaker | `exp-01.html` | ✅ Live | 1a0c9f5 |
 | Cinematic Speaker | `exp-02.html` | 🟡 Ready | d522cf2 |
 | GBGT Box Dieline | `gbgt-box-dieline.svg` | ✅ Done | ecb2cae |
-| Spectrum Prototype | `spectrum-prototype.html` | 🔄 v0.1 | 333866b |
+| Spectrum (exp-03) | `exp-03.html` | 🔄 v0.1 | 71a715b |
 | Dashboard | `dashboard.html` | ✅ Updated | — |
 
 ## 🔗 Quick Links
