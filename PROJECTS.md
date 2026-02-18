@@ -50,7 +50,7 @@
 
 | Priority | Project | Vibe | Est. |
 |----------|---------|------|------|
-| ⭐ High | Life companion app | One Year inspired | Researching |
+| ⭐ High | **Spectrum** | Life timeline as gradient | 🔄 Prototyping |
 | ⭐ High | exp-02 direction | Cinematic speaker | Awaiting Hriday |
 | Medium | Daily Brief system | Automation | 🔄 Fixing |
 | Medium | Design workflow tools | Efficiency | — |
@@ -93,6 +93,7 @@ Reminders   [████████░░░░░░░░░░░░] 40%  
 | KG-R1 3D Speaker | `exp-01.html` | ✅ Live | 1a0c9f5 |
 | Cinematic Speaker | `exp-02.html` | 🟡 Ready | d522cf2 |
 | GBGT Box Dieline | `gbgt-box-dieline.svg` | ✅ Done | ecb2cae |
+| Spectrum Prototype | `spectrum-prototype.html` | 🔄 v0.1 | 333866b |
 | Dashboard | `dashboard.html` | ✅ Updated | — |
 
 ## 🔗 Quick Links
@@ -107,4 +108,4 @@ Reminders   [████████░░░░░░░░░░░░] 40%  
 
 ---
 
-*Last sync: 2026-02-18* ⚡
+*Last sync: 2026-02-18 16:26* ⚡
