@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spectrum — Your Life as a Gradient</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --surface-hover: #1a1a25;
+            --border: #2a2a3a;
+            --text: #e4e4e7;
+            --text-dim: #71717a;
+            --accent: #f97316;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            padding: 24px 40px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+        
+        .header h1 span {
+            color: var(--accent);
+        }
+        
+        .date-display {
+            font-size: 14px;
+            color: var(--text-dim);
+        }
+        
+        /* Timeline Container */
+        .timeline-container {
+            position: relative;
+            height: 300px;
+            background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+            border-bottom: 1px solid var(--border);
+            overflow: hidden;
+        }
+        
+        .timeline-label {
+            position: absolute;
+            top: 20px;
+            left: 40px;
+            font-size: 12px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        /* The Gradient Strip */
+        .gradient-strip {
+            position: absolute;
+            top: 50%;
+            left: 40px;
+            right: 40px;
+            height: 80px;
+            transform: translateY(-50%);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: grab;
+            transition: transform 0.2s ease;
+        }
+        
+        .gradient-strip:active {
+            cursor: grabbing;
+        }
+        
+        .gradient-strip:hover {
+            transform: translateY(-50%) scale(1.02);
+        }
+        
+        .gradient-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            transition: transform 0.3s ease;
+        }
+        
+        .day-slice {
+            height: 100%;
+            flex-shrink: 0;
+            position: relative;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .day-slice:hover {
+            z-index: 10;
+            box-shadow: 0 0 0 2px var(--accent), 0 0 20px rgba(249, 115, 22, 0.3);
+        }
+        
+        .day-slice.missing {
+            background: linear-gradient(90deg, 
+                rgba(255,255,255,0.05) 0%, 
+                rgba(255,255,255,0.02) 50%, 
+                rgba(255,255,255,0.05) 100%);
+        }
+        
+        /* Timeline Navigation */
+        .timeline-nav {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            background: var(--surface);
+            padding: 4px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .nav-btn {
+            padding: 6px 16px;
+            border: none;
+            background: transparent;
+            color: var(--text-dim);
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 16px;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .nav-btn:hover {
+            color: var(--text);
+        }
+        
+        /* Entry Panel */
+        .entry-panel {
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .entry-label {
+            font-size: 12px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 24px;
+        }
+        
+        .entry-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .entry-option {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .entry-option:hover {
+            background: var(--surface-hover);
+            border-color: var(--accent);
+            transform: translateY(-4px);
+        }
+        
+        .entry-option.selected {
+            background: var(--surface-hover);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+        
+        .entry-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        
+        .entry-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .entry-desc {
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+        
+        /* Input Area */
+        .input-area {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            display: none;
+        }
+        
+        .input-area.active {
+            display: block;
+        }
+        
+        .text-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-size: 16px;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            min-height: 120px;
+        }
+        
+        .text-input::placeholder {
+            color: var(--text-dim);
+        }
+        
+        /* Color Preview */
+        .color-preview {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: none;
+        }
+        
+        .color-preview.active {
+            display: flex;
+        }
+        
+        .color-swatch {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .color-info {
+            flex: 1;
+        }
+        
+        .color-hue {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .color-vals {
+            font-size: 12px;
+            color: var(--text-dim);
+            font-family: monospace;
+        }
+        
+        /* Action Buttons */
+        .actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--surface-hover);
+        }
+        
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        /* Day Detail View */
+        .day-detail {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            width: 90%;
+            max-width: 500px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        
+        .day-detail.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .day-detail-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .day-detail-date {
+            font-size: 14px;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+        
+        .day-detail-color {
+            width: 100%;
+            height: 120px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .day-detail-content {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 99;
+        }
+        
+        .overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Spec<span>trum</span></h1>
+        <div class="date-display" id="currentDate">February 18, 2026</div>
+    </header>
+    
+    <div class="timeline-container">
+        <div class="timeline-label">Your Life as a Gradient</div>
+        <div class="gradient-strip" id="gradientStrip">
+            <div class="gradient-content" id="gradientContent"></div>
+        </div>
+        <div class="timeline-nav">
+            <button class="nav-btn active" data-view="life">Life</button>
+            <button class="nav-btn" data-view="year">Year</button>
+            <button class="nav-btn" data-view="month">Month</button>
+            <button class="nav-btn" data-view="day">Day</button>
+        </div>
+    </div>
+    
+    <div class="entry-panel">
+        <div class="entry-label">Capture Today</div>
+        <div class="entry-options">
+            <div class="entry-option" data-type="voice">
+                <div class="entry-icon">🎙️</div>
+                <div class="entry-name">Voice</div>
+                <div class="entry-desc">Speak your moment</div>
+            </div>
+            <div class="entry-option" data-type="text">
+                <div class="entry-icon">✍️</div>
+                <div class="entry-name">Words</div>
+                <div class="entry-desc">Write how it felt</div>
+            </div>
+            <div class="entry-option" data-type="image">
+                <div class="entry-icon">📸</div>
+                <div class="entry-name">Image</div>
+                <div class="entry-desc">A visual memory</div>
+            </div>
+        </div>
+        
+        <div class="input-area" id="textInputArea">
+            <textarea class="text-input" id="textInput" placeholder="How did today feel? What color would you give it?..."></textarea>
+        </div>
+        
+        <div class="color-preview" id="colorPreview">
+            <div class="color-swatch" id="colorSwatch"></div>
+            <div class="color-info">
+                <div class="color-hue" id="colorHue">Amber Gold</div>
+                <div class="color-vals" id="colorVals">H: 38° | S: 87% | B: 92%</div>
+            </div>
+        </div>
+        
+        <div class="actions" id="actions" style="display: none;">
+            <button class="btn btn-secondary" onclick="cancelEntry()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveEntry()">Add to Timeline</button>
+        </div>
+    </div>
+    
+    <div class="overlay" id="overlay" onclick="closeDetail()"></div>
+    <div class="day-detail" id="dayDetail">
+        <button class="day-detail-close" onclick="closeDetail()">×</button>
+        <div class="day-detail-date" id="detailDate">February 16, 2026</div>
+        <div class="day-detail-color" id="detailColor"></div>
+        <div class="day-detail-content" id="detailContent"></div>
+    </div>
+
+    <script>
+        // Generate sample data - 90 days of entries
+        const entries = [];
+        const today = new Date('2026-02-18');
+        
+        // Sample color palettes representing different moods
+        const moodColors = [
+            { h: 45, s: 90, b: 95, name: 'Golden Hour', desc: 'warm, optimistic' },
+            { h: 200, s: 70, b: 85, name: 'Ocean Calm', desc: 'peaceful, deep' },
+            { h: 280, s: 60, b: 75, name: 'Twilight Purple', desc: 'contemplative' },
+            { h: 25, s: 85, b: 90, name: 'Sunset Orange', desc: 'energetic' },
+            { h: 160, s: 50, b: 80, name: 'Forest Mist', desc: 'grounded' },
+            { h: 340, s: 75, b: 85, name: 'Rose Dawn', desc: 'tender, soft' },
+            { h: 220, s: 80, b: 70, name: 'Midnight', desc: 'introspective' },
+        ];
+        
+        const sampleTexts = [
+            "Today felt light. Productive morning, good conversations.",
+            "Heavy day. But the sunset reminded me that endings are beautiful too.",
+            "Quiet. Just what I needed.",
+            "So much energy! Started something new.",
+            "Reflective. Thinking about where this is all going.",
+            "Connected. Deep talks with people I love.",
+            "Challenging. But I showed up anyway.",
+        ];
+        
+        for (let i = 89; i >= 0; i--) {
+            const date = new Date(today);
+            date.setDate(date.getDate() - i);
+            
+            // 20% chance of missing day
+            if (Math.random() > 0.2) {
+                const mood = moodColors[Math.floor(Math.random() * moodColors.length)];
+                entries.push({
+                    date: date,
+                    color: mood,
+                    text: sampleTexts[Math.floor(Math.random() * sampleTexts.length)],
+                    type: Math.random() > 0.5 ? 'text' : 'voice'
+                });
+            } else {
+                entries.push({
+                    date: date,
+                    missing: true
+                });
+            }
+        }
+        
+        // Render gradient
+        function renderGradient() {
+            const container = document.getElementById('gradientContent');
+            container.innerHTML = '';
+            
+            entries.forEach((entry, index) => {
+                const slice = document.createElement('div');
+                slice.className = 'day-slice' + (entry.missing ? ' missing' : '');
+                slice.style.width = '8px';
+                
+                if (!entry.missing) {
+                    const color = entry.color;
+                    slice.style.backgroundColor = `hsl(${color.h}, ${color.s}%, ${color.b}%)`;
+                    slice.onclick = () => showDetail(entry);
+                }
+                
+                container.appendChild(slice);
+            });
+        }
+        
+        // Show day detail
+        function showDetail(entry) {
+            document.getElementById('detailDate').textContent = entry.date.toLocaleDateString('en-US', { 
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+            });
+            document.getElementById('detailColor').style.backgroundColor = 
+                `hsl(${entry.color.h}, ${entry.color.s}%, ${entry.color.b}%)`;
+            document.getElementById('detailContent').textContent = entry.text;
+            
+            document.getElementById('overlay').classList.add('active');
+            document.getElementById('dayDetail').classList.add('active');
+        }
+        
+        function closeDetail() {
+            document.getElementById('overlay').classList.remove('active');
+            document.getElementById('dayDetail').classList.remove('active');
+        }
+        
+        // Entry type selection
+        let selectedType = null;
+        document.querySelectorAll('.entry-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.entry-option').forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+                selectedType = option.dataset.type;
+                
+                if (selectedType === 'text') {
+                    document.getElementById('textInputArea').classList.add('active');
+                    document.getElementById('textInput').focus();
+                }
+                
+                document.getElementById('actions').style.display = 'flex';
+            });
+        });
+        
+        // Analyze text and generate color
+        document.getElementById('textInput').addEventListener('input', (e) => {
+            const text = e.target.value;
+            if (text.length > 10) {
+                // Simple sentiment-based color generation
+                const color = analyzeTextToColor(text);
+                showColorPreview(color);
+            }
+        });
+        
+        function analyzeTextToColor(text) {
+            // Keywords for sentiment analysis
+            const positiveWords = ['good', 'great', 'amazing', 'wonderful', 'love', 'happy', 'joy', 'energy', 'light', 'productive'];
+            const calmWords = ['peaceful', 'calm', 'quiet', 'still', 'deep', 'ocean', 'forest', 'grounded'];
+            const energeticWords = ['energy', 'excited', 'new', 'started', 'fire', 'passion', 'drive'];
+            const reflectiveWords = ['thinking', 'reflective', 'introspective', 'deep', 'contemplative', 'midnight'];
+            const tenderWords = ['love', 'tender', 'soft', 'gentle', 'care', 'connected', 'rose'];
+            
+            const lowerText = text.toLowerCase();
+            
+            let hue = 45; // Default gold
+            let saturation = 70;
+            let brightness = 85;
+            let name = 'Golden Moment';
+            
+            if (energeticWords.some(w => lowerText.includes(w))) {
+                hue = 25; saturation = 90; brightness = 92;
+                name = 'Sunset Energy';
+            } else if (positiveWords.some(w => lowerText.includes(w))) {
+                hue = 50; saturation = 85; brightness = 95;
+                name = 'Warm Optimism';
+            } else if (tenderWords.some(w => lowerText.includes(w))) {
+                hue = 340; saturation = 65; brightness = 88;
+                name = 'Rose Connection';
+            } else if (calmWords.some(w => lowerText.includes(w))) {
+                hue = 170; saturation = 45; brightness = 78;
+                name = 'Calm Clarity';
+            } else if (reflectiveWords.some(w => lowerText.includes(w))) {
+                hue = 260; saturation = 55; brightness = 70;
+                name = 'Deep Reflection';
+            }
+            
+            // Adjust based on text length (longer = more saturated)
+            saturation = Math.min(95, saturation + (text.length / 50));
+            
+            return { h: hue, s: saturation, b: brightness, name };
+        }
+        
+        function showColorPreview(color) {
+            const preview = document.getElementById('colorPreview');
+            preview.classList.add('active');
+            document.getElementById('colorSwatch').style.backgroundColor = 
+                `hsl(${color.h}, ${color.s}%, ${color.b}%)`;
+            document.getElementById('colorHue').textContent = color.name;
+            document.getElementById('colorVals').textContent = 
+                `H: ${Math.round(color.h)}° | S: ${Math.round(color.s)}% | B: ${Math.round(color.b)}%`;
+        }
+        
+        function saveEntry() {
+            const text = document.getElementById('textInput').value;
+            if (!text) return;
+            
+            const color = analyzeTextToColor(text);
+            
+            entries.push({
+                date: new Date(),
+                color: color,
+                text: text,
+                type: selectedType
+            });
+            
+            renderGradient();
+            cancelEntry();
+            
+            // Scroll to end
+            const strip = document.getElementById('gradientContent');
+            strip.parentElement.scrollLeft = strip.scrollWidth;
+        }
+        
+        function cancelEntry() {
+            document.querySelectorAll('.entry-option').forEach(o => o.classList.remove('selected'));
+            document.getElementById('textInputArea').classList.remove('active');
+            document.getElementById('textInput').value = '';
+            document.getElementById('colorPreview').classList.remove('active');
+            document.getElementById('actions').style.display = 'none';
+            selectedType = null;
+        }
+        
+        // Navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const view = btn.dataset.view;
+                const slices = document.querySelectorAll('.day-slice');
+                
+                slices.forEach(slice => {
+                    if (view === 'life') slice.style.width = '8px';
+                    else if (view === 'year') slice.style.width = '20px';
+                    else if (view === 'month') slice.style.width = '40px';
+                    else if (view === 'day') slice.style.width = '80px';
+                });
+            });
+        });
+        
+        // Initialize
+        renderGradient();
+    </script>
+</body>
+</html>
