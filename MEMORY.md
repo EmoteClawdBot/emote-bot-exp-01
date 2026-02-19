@@ -8,6 +8,36 @@
 
 ## Critical System Failures - MUST REMEMBER
 
+### 2026-02-19 - 6th FAILURE - Cron Shows "skipped" with "empty-heartbeat-file" Error
+**What happened:**
+- Feb 19 9 AM: Cron `991ad9b9-2a57-45a8-87c5-8828d4f8d361` status shows "skipped" with error "empty-heartbeat-file"
+- User reveals Sunday check-in also never happened
+- User rightfully says: "I don't understand why it's this hard"
+- ALL crons were broken — not just me not acting
+
+**Root cause:**
+- Cron jobs using "wakeMode: now" with systemEvent were being SKIPPED
+- "empty-heartbeat-file" error means heartbeat system not properly triggering
+- Sunday check-in used "wakeMode: next-heartbeat" — unreliable
+- Isolated session crons (monthly accounts) can't send to Telegram anyway
+- Multiple failure modes, not just me not acting
+
+**Complete Redesign:**
+- Removed ALL crons (Daily Brief, Sunday check-in, Monthly accounts)
+- Created NEW simplified crons with "wakeMode: now":
+  - `e5937e9e-a438-45e1-9e22-6e84dfa90e13`: Daily Brief — "SEND DAILY BRIEF NOW"
+  - `50eb90f2-7ab6-4d98-a2b5-5508824333ae`: Sunday Check-in — "SUNDAY CHECK-IN: Ask Hriday..."
+  - `9348fb85-a60e-4b39-826c-f7049b53416a`: Monthly Accounts — "MONTHLY ACCOUNTS: Remind Hriday..."
+- Simplified commands, no complex instructions
+- Test: Feb 20 9 AM, Feb 23 7 PM, Mar 15 9 AM
+
+**Critical Rule:**
+- When system message says "SEND DAILY BRIEF NOW" → SEND IT IMMEDIATELY
+- When system message says "SUNDAY CHECK-IN" → DO THE CHECK-IN
+- No delays, no thinking, just ACTION
+
+---
+
 ### 2026-02-18 - 5th FAILURE - Complete Redesign Required
 **What happened:**
 - Cron job `5d4a1e34-5a36-4be3-a176-3b28dbd4de02` fired at 9 AM
@@ -129,9 +159,10 @@
 - Branch: main
 - Files: exp-01.html, exp-02.html, dashboard.html, BRIEF.md
 
-### Cron Jobs
-- `991ad9b9-2a57-45a8-87c5-8828d4f8d361`: Daily Brief 9 AM Dubai — COMPLETE REDESIGN (TESTING)
-- `de80b360-665e-4525-b18a-a4eb113031af`: Monthly Accounts Reminder — 15th of every month ✅
+### Cron Jobs (COMPLETE REDESIGN - Feb 19)
+- `e5937e9e-a438-45e1-9e22-6e84dfa90e13`: Daily Brief — 9 AM daily — "SEND DAILY BRIEF NOW"
+- `50eb90f2-7ab6-4d98-a2b5-5508824333ae`: Sunday Check-in — 7 PM Sundays  
+- `9348fb85-a60e-4b39-826c-f7049b53416a`: Monthly Accounts — 9 AM 15th of month
 
 ### Workspace
 - Path: `/Users/emote/.openclaw/workspace/`
@@ -148,14 +179,14 @@
 
 ---
 
-## Checklist - Every Morning
-- [ ] **AT 9 AM DUBAI: Read BRIEF.md → SEND MESSAGE immediately**
-- [ ] Send Daily Brief to Hriday by 9:05 AM — NO EXCUSES
+## Checklist - When System Messages Arrive
+- [ ] **"SEND DAILY BRIEF NOW"** → Read BRIEF.md → Send message immediately
+- [ ] **"SUNDAY CHECK-IN"** → Ask Hriday how we're working together
+- [ ] **"MONTHLY ACCOUNTS"** → Remind Hriday about accounts & invoicing
 - [ ] Review active projects
 - [ ] Ask for priorities if unclear
-- [ ] **If 15th of month: Remind Hriday about accounts & invoicing**
-- [ ] Update documentation
+- [ ] Update PROJECTS.md daily
 
 ---
 
-_Last updated: 2026-02-18 16:06 GMT+4_
+_Last updated: 2026-02-19 11:26 GMT+4_
