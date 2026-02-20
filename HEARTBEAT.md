@@ -1,5 +1,11 @@
 # HEARTBEAT.md
 
-# Keep this file empty (or with only comments) to skip heartbeat API calls.
+## Daily Tasks
 
-# Add tasks below when you want the agent to check something periodically.
+- [ ] Check BRIEF.md status
+- [ ] Review active projects  
+- [ ] Update PROJECTS.md if needed
+
+## Notes
+- Cron jobs should trigger independently
+- This file enables heartbeat checks
