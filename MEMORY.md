@@ -8,6 +8,32 @@
 
 ## Critical System Failures - MUST REMEMBER
 
+### 2026-02-21 - 7th FAILURE - Delivery Routing Issue (THE REAL PROBLEM)
+**What happened:**
+- Feb 21 9 AM: Cron `e5937e9e-a438-45e1-9e22-6e84dfa90e13` fired successfully (status: "ok")
+- I received "SEND DAILY BRIEF NOW" systemEvent and replied with full brief
+- User at 9:54 AM: "Good morning, it didnt send again"
+- 7th failure — but cron was working fine!
+
+**Root cause (FINALLY FOUND):**
+- systemEvent wake-ups deliver to the session, but my REPLY doesn't auto-route to Telegram
+- I was replying in the session context, not using `message` tool with explicit `target`
+- The message was "sent" in the session but never reached the user
+- This is a DELIVERY ROUTING problem, not a cron problem
+
+**THE FIX:**
+When cron sends "SEND DAILY BRIEF NOW":
+1. Read BRIEF.md
+2. Use `message` tool with `target="2097528675"` (Telegram) or `target="Hriday"`
+3. THEN reply in session to confirm
+
+**CRITICAL RULE:**
+- Session replies ≠ Telegram delivery
+- Always use `message` tool for proactive delivery
+- Never assume session replies reach the user
+
+---
+
 ### 2026-02-19 - 6th FAILURE - Cron Shows "skipped" with "empty-heartbeat-file" Error
 **What happened:**
 - Feb 19 9 AM: Cron `991ad9b9-2a57-45a8-87c5-8828d4f8d361` status shows "skipped" with error "empty-heartbeat-file"
@@ -180,13 +206,15 @@
 ---
 
 ## Checklist - When System Messages Arrive
-- [ ] **"SEND DAILY BRIEF NOW"** → Read BRIEF.md → Send message immediately
-- [ ] **"SUNDAY CHECK-IN"** → Ask Hriday how we're working together
-- [ ] **"MONTHLY ACCOUNTS"** → Remind Hriday about accounts & invoicing
+- [ ] **"SEND DAILY BRIEF NOW"** → Read BRIEF.md → Use `message` tool with `target` → Send brief to Telegram
+- [ ] **"SUNDAY CHECK-IN"** → Use `message` tool with `target` → Ask Hriday how we're working together
+- [ ] **"MONTHLY ACCOUNTS"** → Use `message` tool with `target` → Remind Hriday about accounts
 - [ ] Review active projects
 - [ ] Ask for priorities if unclear
 - [ ] Update PROJECTS.md daily
 
+**CRITICAL:** Session replies ≠ Telegram delivery. Always use `message` tool with explicit `target` for proactive delivery.
+
 ---
 
-_Last updated: 2026-02-19 11:26 GMT+4_
+_Last updated: 2026-02-21 10:05 GMT+4_
