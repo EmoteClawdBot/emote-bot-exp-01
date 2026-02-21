@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spectrum — Your Life as a Gradient</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg: #0a0a0f;
+            --surface: rgba(18, 18, 26, 0.6);
+            --surface-hover: rgba(26, 26, 37, 0.7);
+            --text: #f0f0f5;
+            --text-dim: #9a9aaa;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Full Screen Gradient Background - The Hero */
+        .gradient-hero {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            opacity: 0.4;
+            transition: all 1s ease;
+        }
+        
+        .gradient-hero.active-day {
+            opacity: 0.6;
+        }
+        
+        /* Animated flowing gradient */
+        @keyframes gradientFlow {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+        
+        @keyframes particleBurst {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+        
+        /* Header - Floating on top */
+        .header {
+            position: relative;
+            z-index: 10;
+            padding: 24px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .brand h1 {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .header-subtitle {
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+        
+        /* Main Content - Floating cards */
+        .main {
+            position: relative;
+            z-index: 10;
+            padding: 20px 32px 100px;
+            max-width: 680px;
+            margin: 0 auto;
+        }
+        
+        .intro {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .intro h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        .intro p {
+            font-size: 16px;
+            color: var(--text-dim);
+        }
+        
+        /* Timeline Strip - Subtle indicator */
+        .timeline-strip {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 32px;
+            padding: 4px;
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .timeline-dot {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .timeline-dot:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scaleY(1.5);
+        }
+        
+        .timeline-dot.active {
+            background: white;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+        
+        .timeline-dot.has-entry {
+            background: var(--dot-color, rgba(255,255,255,0.3));
+        }
+        
+        /* Entry Cards - Glass morphism */
+        .entry-card {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        
+        .entry-card:hover {
+            background: var(--surface-hover);
+            transform: translateY(-2px);
+            border-color: rgba(255,255,255,0.15);
+        }
+        
+        .entry-card.active {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .card-date {
+            font-size: 13px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .card-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--card-color, rgba(255,255,255,0.3));
+            box-shadow: 0 0 10px var(--card-color, transparent);
+        }
+        
+        .card-text {
+            font-size: 17px;
+            line-height: 1.6;
+            color: var(--text);
+        }
+        
+        .card-placeholder {
+            font-size: 17px;
+            line-height: 1.6;
+            color: var(--text-dim);
+            font-style: italic;
+        }
+        
+        /* Inline Input - Glass */
+        .inline-input {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .entry-card.active .inline-input {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .input-types {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .type-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            color: var(--text-dim);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .type-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text);
+        }
+        
+        .type-btn.active {
+            background: rgba(255,255,255,0.15);
+            color: var(--text);
+            border-color: rgba(255,255,255,0.3);
+        }
+        
+        textarea {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 16px;
+            color: var(--text);
+            font-size: 16px;
+            line-height: 1.6;
+            resize: none;
+            min-height: 100px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: rgba(255,255,255,0.3);
+            background: rgba(0,0,0,0.4);
+        }
+        
+        .input-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+        }
+        
+        .color-preview {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .preview-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--preview-color, rgba(255,255,255,0.3));
+            box-shadow: 0 0 15px var(--preview-color, transparent);
+            transition: all 0.3s ease;
+        }
+        
+        .preview-text {
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+        
+        .input-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-dim);
+        }
+        
+        .btn-ghost:hover {
+            color: var(--text);
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .btn-fill {
+            background: white;
+            color: #0a0a0f;
+        }
+        
+        .btn-fill:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(255,255,255,0.3);
+        }
+        
+        /* FAB */
+        .fab {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            color: #0a0a0f;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 30px rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 40px rgba(255,255,255,0.4);
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(30px);
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .modal-content {
+            background: rgba(18, 18, 26, 0.8);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 32px;
+            max-width: 520px;
+            width: 100%;
+            overflow: hidden;
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+        
+        .modal-glow {
+            height: 160px;
+            background: var(--modal-color, white);
+            opacity: 0.6;
+            filter: blur(60px);
+            margin: -40px -40px 0;
+        }
+        
+        .modal-body {
+            padding: 32px;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: -20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .modal-date {
+            font-size: 12px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+        
+        .modal-mood {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--modal-color, white);
+            text-shadow: 0 0 30px var(--modal-color, transparent);
+        }
+        
+        .modal-text {
+            font-size: 18px;
+            line-height: 1.7;
+            color: var(--text);
+        }
+    </style>
+</head>
+<body>
+    <!-- Full Screen Gradient Background -->
+    <div class="gradient-hero" id="gradientHero"></div>
+    
+    <header class="header">
+        <div class="brand">
+            <div class="brand-icon">◐</div>
+            <h1>Spectrum</h1>
+        </div>
+        <div class="header-subtitle">Your life in color</div>
+    </header>
+    
+    <main class="main">
+        <div class="intro">
+            <h2>Each entry adds color<br>to your spectrum</h2>
+            <p>30 days of moments</p>
+        </div>
+        
+        <!-- Timeline Strip -->
+        <div class="timeline-strip" id="timelineStrip"></div>
+        
+        <!-- Entries -->
+        <div class="entries" id="entries"></div>
+    </main>
+    
+    <!-- FAB -->
+    <button class="fab" onclick="jumpToToday()">+</button>
+    
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-glow" id="modalGlow"></div>
+            <div class="modal-body">
+                <button class="modal-close" onclick="closeModal()">×</button>
+                <div class="modal-date" id="modalDate"></div>
+                <div class="modal-mood" id="modalMood"></div>
+                <p class="modal-text" id="modalText"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate 30 days
+        const entries = [];
+        const today = new Date();
+        
+        const colors = [
+            '#ff006e', '#fb5607', '#ffbe0b', '#06ffa5', 
+            '#00b4d8', '#3a86ff', '#8338ec', '#7209b7',
+            '#f72585', '#4cc9f0', '#4895ef', '#560bad'
+        ];
+        
+        const sampleTexts = [
+            "Today felt light. Productive morning, good conversations.",
+            "Heavy day, but the sunset reminded me endings are beautiful too.",
+            "Quiet. Just what I needed.",
+            "So much energy! Started something new.",
+            "Reflective. Thinking about where this is all going.",
+            "Connected. Deep talks with people I love.",
+            "Challenging. But I showed up anyway.",
+        ];
+        
+        for (let i = 29; i >= 0; i--) {
+            const date = new Date(today);
+            date.setDate(date.getDate() - i);
+            
+            if (Math.random() > 0.4 || i === 0) {
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                entries.push({
+                    id: date.getTime(),
+                    date: date,
+                    dateStr: formatDate(date),
+                    text: i === 0 ? '' : sampleTexts[Math.floor(Math.random() * sampleTexts.length)],
+                    color: color,
+                    hasEntry: i !== 0
+                });
+            } else {
+                entries.push({
+                    id: Date.now() + i,
+                    date: date,
+                    dateStr: formatDate(date),
+                    text: '',
+                    hasEntry: false,
+                    color: '#2a2a3a'
+                });
+            }
+        }
+        
+        function formatDate(date) {
+            const now = new Date();
+            const diff = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+            
+            if (diff === 0) return 'Today';
+            if (diff === 1) return 'Yesterday';
+            if (diff < 7) return diff + 'd ago';
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        
+        let activeEntryId = null;
+        
+        // Build full screen gradient
+        function buildHeroGradient() {
+            const gradientColors = entries.map(e => e.color);
+            const uniqueColors = [...new Set(gradientColors)];
+            
+            // Create a radial gradient with multiple color stops
+            const stops = uniqueColors.map((color, i) => {
+                const pct = (i / (uniqueColors.length - 1)) * 100;
+                return `${color} ${pct}%`;
+            }).join(', ');
+            
+            return `radial-gradient(ellipse at 30% 20%, ${stops})`;
+        }
+        
+        function renderHeroGradient() {
+            const hero = document.getElementById('gradientHero');
+            hero.style.background = buildHeroGradient();
+            hero.style.backgroundSize = '200% 200%';
+            hero.style.animation = 'gradientFlow 20s ease infinite';
+        }
+        
+        // Render timeline strip
+        function renderTimelineStrip() {
+            const strip = document.getElementById('timelineStrip');
+            strip.innerHTML = entries.map((entry, idx) => `
+                <div class="timeline-dot ${entry.id === activeEntryId ? 'active' : ''} ${entry.hasEntry ? 'has-entry' : ''}"
+                     style="--dot-color: ${entry.color}"
+                     onclick="selectEntry(${entry.id})"
+                     title="${entry.dateStr}">
+                </div>
+            `).join('');
+        }
+        
+        // Render entries
+        function renderEntries() {
+            const container = document.getElementById('entries');
+            container.innerHTML = entries.map(entry => `
+                <div class="entry-card ${entry.id === activeEntryId ? 'active' : ''}"
+                     style="--card-color: ${entry.color}"
+                     data-id="${entry.id}"
+                     onclick="handleCardClick(${entry.id})">
+                    
+                    <div class="card-header">
+                        <span class="card-date">${entry.dateStr}</span>
+                        <div class="card-indicator"></div>
+                    </div>
+                    
+                    ${entry.hasEntry 
+                        ? `<div class="card-text">${entry.text}</div>`
+                        : `<div class="card-placeholder">Tap to add a note...</div>`
+                    }
+                    
+                    <div class="inline-input" onclick="event.stopPropagation()">
+                        <div class="input-types">
+                            <button class="type-btn active">✍️ Text</button>
+                            <button class="type-btn">🎙️ Voice</button>
+                            <button class="type-btn">📸 Photo</button>
+                        </div>
+                        <textarea id="input-${entry.id}" placeholder="How did ${entry.dateStr.toLowerCase()} feel?">${entry.text}</textarea>
+                        <div class="input-footer">
+                            <div class="color-preview">
+                                <div class="preview-dot" id="preview-${entry.id}"></div>
+                                <span class="preview-text" id="preview-text-${entry.id}">Type to see color...</span>
+                            </div>
+                            <div class="input-actions">
+                                <button class="btn btn-ghost" onclick="closeInput()">Cancel</button>
+                                <button class="btn btn-fill" onclick="saveEntry(${entry.id})">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add listeners
+            entries.forEach(entry => {
+                const textarea = document.getElementById(`input-${entry.id}`);
+                if (textarea) {
+                    textarea.addEventListener('input', (e) => {
+                        const result = analyzeText(e.target.value);
+                        updatePreview(entry.id, result);
+                    });
+                }
+            });
+        }
+        
+        function handleCardClick(id) {
+            const entry = entries.find(e => e.id === id);
+            if (entry.hasEntry && entry.id !== activeEntryId) {
+                showModal(entry);
+            } else {
+                selectEntry(id);
+            }
+        }
+        
+        function selectEntry(id) {
+            activeEntryId = id;
+            const entry = entries.find(e => e.id === id);
+            
+            // Update gradient hero to emphasize this day's color
+            const hero = document.getElementById('gradientHero');
+            if (entry.hasEntry) {
+                hero.style.background = `radial-gradient(ellipse at 30% 30%, ${entry.color} 0%, transparent 70%), ${buildHeroGradient()}`;
+                hero.classList.add('active-day');
+            }
+            
+            renderTimelineStrip();
+            renderEntries();
+            
+            const card = document.querySelector(`.entry-card[data-id="${id}"]`);
+            if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            setTimeout(() => {
+                const textarea = document.getElementById(`input-${id}`);
+                if (textarea) textarea.focus();
+            }, 300);
+        }
+        
+        function closeInput() {
+            activeEntryId = null;
+            renderHeroGradient();
+            renderTimelineStrip();
+            renderEntries();
+        }
+        
+        function analyzeText(text) {
+            const lower = text.toLowerCase();
+            
+            if (lower.includes('sad') || lower.includes('heavy') || lower.includes('tired'))
+                return { color: '#3a86ff', name: 'Storm' };
+            if (lower.includes('anxious') || lower.includes('worried'))
+                return { color: '#7209b7', name: 'Fog' };
+            if (lower.includes('love') || lower.includes('happy') || lower.includes('joy'))
+                return { color: '#ff006e', name: 'Passion' };
+            if (lower.includes('energy') || lower.includes('excited'))
+                return { color: '#fb5607', name: 'Fire' };
+            if (lower.includes('calm') || lower.includes('peace'))
+                return { color: '#06ffa5', name: 'Growth' };
+            if (lower.includes('think') || lower.includes('reflect'))
+                return { color: '#8338ec', name: 'Dream' };
+            
+            return { color: '#ffbe0b', name: 'Sunshine' };
+        }
+        
+        function updatePreview(id, result) {
+            const dot = document.getElementById(`preview-${id}`);
+            const text = document.getElementById(`preview-text-${id}`);
+            
+            if (dot) dot.style.setProperty('--preview-color', result.color);
+            if (text) text.textContent = result.name;
+        }
+        
+        function saveEntry(id) {
+            const entry = entries.find(e => e.id === id);
+            const textarea = document.getElementById(`input-${id}`);
+            const text = textarea.value.trim();
+            
+            if (!text) return;
+            
+            const result = analyzeText(text);
+            entry.text = text;
+            entry.hasEntry = true;
+            entry.color = result.color;
+            
+            activeEntryId = null;
+            renderHeroGradient();
+            renderTimelineStrip();
+            renderEntries();
+        }
+        
+        function showModal(entry) {
+            document.getElementById('modalGlow').style.setProperty('--modal-color', entry.color);
+            document.getElementById('modalMood').style.setProperty('--modal-color', entry.color);
+            document.getElementById('modalDate').textContent = entry.date.toLocaleDateString('en-US', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+            document.getElementById('modalMood').textContent = getMoodName(entry.color);
+            document.getElementById('modalText').textContent = entry.text;
+            document.getElementById('modal').classList.add('active');
+        }
+        
+        function getMoodName(color) {
+            const names = {
+                '#ff006e': 'Passion', '#fb5607': 'Fire', '#ffbe0b': 'Sunshine',
+                '#06ffa5': 'Growth', '#00b4d8': 'Clarity', '#3a86ff': 'Depth',
+                '#8338ec': 'Dream', '#7209b7': 'Mystery', '#f72585': 'Love',
+                '#4cc9f0': 'Breeze', '#4895ef': 'Sky', '#560bad': 'Void'
+            };
+            return names[color] || 'Moment';
+        }
+        
+        function closeModal(e) {
+            if (!e || e.target.id === 'modal') {
+                document.getElementById('modal').classList.remove('active');
+            }
+        }
+        
+        function jumpToToday() {
+            const todayEntry = entries.find(e => e.dateStr === 'Today');
+            if (todayEntry) selectEntry(todayEntry.id);
+        }
+        
+        // Initialize
+        renderHeroGradient();
+        renderTimelineStrip();
+        renderEntries();
+    </script>
+</body>
+</html>
