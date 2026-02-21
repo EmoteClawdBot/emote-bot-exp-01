@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spectrum — Your Life as a Gradient</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --surface-hover: #1a1a25;
+            --text: #f0f0f5;
+            --text-dim: #6b6b7b;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        
+        .header {
+            padding: 20px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #ff006e, #f4a261);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .brand h1 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+        
+        @keyframes flow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 0% 200%; }
+        }
+        
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(255,255,255,0.1); }
+            50% { box-shadow: 0 0 50px rgba(255,255,255,0.2), 0 0 80px rgba(255,255,255,0.1); }
+        }
+        
+        @keyframes particleBurst {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+        
+        /* One Continuous Gradient Timeline */
+        .gradient-river {
+            position: fixed;
+            left: 0;
+            top: 80px;
+            bottom: 0;
+            width: 60px;
+            overflow: hidden;
+        }
+        
+        .gradient-stream {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            min-height: 100%;
+            transition: all 0.5s ease;
+        }
+        
+        .day-marker {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 60px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 4px solid transparent;
+        }
+        
+        .day-marker:hover {
+            background: rgba(255,255,255,0.1);
+            border-left-color: rgba(255,255,255,0.5);
+        }
+        
+        .day-marker.active {
+            background: rgba(255,255,255,0.15);
+            border-left-color: white;
+            border-left-width: 6px;
+        }
+        
+        .day-marker::after {
+            content: attr(data-date);
+            position: absolute;
+            left: 70px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            color: var(--text-dim);
+            opacity: 0;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        
+        .day-marker:hover::after,
+        .day-marker.active::after {
+            opacity: 1;
+            left: 75px;
+        }
+        
+        .day-marker.active::after {
+            color: var(--text);
+            font-weight: 500;
+        }
+        
+        /* Ripple effect on the gradient */
+        .gradient-ripple {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .day-marker.active .gradient-ripple {
+            animation: pulse 1.5s ease infinite;
+            opacity: 1;
+        }
+        
+        /* Main Content */
+        .main {
+            margin-left: 100px;
+            padding: 20px 40px 40px;
+            max-width: 600px;
+        }
+        
+        .header-section {
+            margin-bottom: 32px;
+        }
+        
+        .header-section h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .header-section p {
+            color: var(--text-dim);
+            font-size: 16px;
+        }
+        
+        /* Entry Card */
+        .entry-card {
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 20px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 4px solid transparent;
+        }
+        
+        .entry-card:hover {
+            background: var(--surface-hover);
+            transform: translateY(-2px);
+        }
+        
+        .entry-card.active {
+            background: linear-gradient(135deg, var(--card-color, var(--surface)) 0%, var(--surface) 100%);
+            border-left-color: var(--card-color, var(--text));
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            animation: glowPulse 2s ease infinite;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .card-date {
+            font-size: 13px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .card-mood {
+            font-size: 12px;
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .card-text {
+            font-size: 17px;
+            line-height: 1.6;
+            color: var(--text);
+        }
+        
+        .card-placeholder {
+            font-size: 17px;
+            line-height: 1.6;
+            color: var(--text-dim);
+            font-style: italic;
+        }
+        
+        /* Inline Input */
+        .inline-input {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .entry-card.active .inline-input {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .input-types {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .type-pill {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: transparent;
+            color: var(--text-dim);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .type-pill:hover {
+            border-color: rgba(255,255,255,0.3);
+            color: var(--text);
+        }
+        
+        .type-pill.active {
+            background: rgba(255,255,255,0.1);
+            color: var(--text);
+            border-color: rgba(255,255,255,0.3);
+        }
+        
+        textarea {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 16px;
+            color: var(--text);
+            font-size: 16px;
+            line-height: 1.6;
+            resize: none;
+            min-height: 120px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--card-color, rgba(255,255,255,0.3));
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.05);
+        }
+        
+        textarea.typing {
+            animation: borderPulse 1s ease infinite;
+        }
+        
+        @keyframes borderPulse {
+            0%, 100% { border-color: rgba(255,255,255,0.1); }
+            50% { border-color: rgba(255,255,255,0.4); }
+        }
+        
+        .input-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+        }
+        
+        .color-hint {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .hint-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--hint-color, var(--text-dim));
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .hint-text {
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+        
+        .input-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-dim);
+        }
+        
+        .btn-ghost:hover {
+            color: var(--text);
+        }
+        
+        .btn-fill {
+            background: var(--btn-color, linear-gradient(135deg, #ff006e, #f4a261));
+            color: white;
+        }
+        
+        .btn-fill:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(20px);
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .modal-card {
+            background: var(--surface);
+            border-radius: 28px;
+            max-width: 480px;
+            width: 100%;
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+        
+        .modal-gradient {
+            height: 140px;
+            background: var(--modal-color, linear-gradient(135deg, #ff006e, #f4a261));
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.3);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 28px;
+        }
+        
+        .modal-date {
+            font-size: 12px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+        
+        .modal-mood {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .modal-text {
+            font-size: 18px;
+            line-height: 1.7;
+            color: var(--text);
+        }
+        
+        /* FAB */
+        .fab {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff006e, #f4a261);
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 24px rgba(255, 0, 110, 0.4);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 32px rgba(255, 0, 110, 0.5);
+        }
+        
+        /* Particles */
+        .particle {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="brand">
+            <div class="brand-icon">◐</div>
+            <h1>Spectrum</h1>
+        </div>
+    </header>
+    
+    <!-- One Continuous Gradient River -->
+    <div class="gradient-river" id="gradientRiver">
+        <div class="gradient-stream" id="gradientStream"></div>
+    </div>
+    
+    <!-- Main Content -->
+    <main class="main">
+        <div class="header-section">
+            <h2>Your moments</h2>
+            <p>Your life as one flowing gradient</p>
+        </div>
+        
+        <div class="entries-list" id="entriesList"></div>
+    </main>
+    
+    <!-- FAB -->
+    <button class="fab" onclick="jumpToToday()">+</button>
+    
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-gradient" id="modalGradient">
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-date" id="modalDate"></div>
+                <div class="modal-mood" id="modalMood"></div>
+                <p class="modal-text" id="modalText"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate 30 days
+        const entries = [];
+        const today = new Date();
+        
+        const colors = [
+            '#ff006e', '#fb5607', '#ffbe0b', '#06ffa5', 
+            '#00b4d8', '#3a86ff', '#8338ec', '#7209b7'
+        ];
+        
+        const sampleTexts = [
+            "Today felt light. Productive morning, good conversations.",
+            "Heavy day, but the sunset reminded me endings are beautiful too.",
+            "Quiet. Just what I needed.",
+            "So much energy! Started something new.",
+            "Reflective. Thinking about where this is all going.",
+            "Connected. Deep talks with people I love.",
+            "Challenging. But I showed up anyway.",
+        ];
+        
+        for (let i = 29; i >= 0; i--) {
+            const date = new Date(today);
+            date.setDate(date.getDate() - i);
+            
+            if (Math.random() > 0.4 || i === 0) {
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                entries.push({
+                    id: date.getTime(),
+                    date: date,
+                    dateStr: formatDate(date),
+                    text: i === 0 ? '' : sampleTexts[Math.floor(Math.random() * sampleTexts.length)],
+                    color: color,
+                    hasEntry: i !== 0
+                });
+            } else {
+                entries.push({
+                    id: Date.now() + i,
+                    date: date,
+                    dateStr: formatDate(date),
+                    text: '',
+                    hasEntry: false,
+                    color: '#2a2a3a'
+                });
+            }
+        }
+        
+        function formatDate(date) {
+            const now = new Date();
+            const diff = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+            
+            if (diff === 0) return 'Today';
+            if (diff === 1) return 'Yesterday';
+            if (diff < 7) return diff + 'd ago';
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        
+        let activeEntryId = null;
+        
+        // Build one continuous gradient
+        function buildContinuousGradient() {
+            // Create gradient stops - each day transitions into the next
+            let gradientStops = [];
+            
+            entries.forEach((entry, idx) => {
+                const pct = (idx / (entries.length - 1)) * 100;
+                gradientStops.push(`${entry.color} ${pct}%`);
+                
+                // Add midpoint for smoother transitions
+                if (idx < entries.length - 1) {
+                    const nextPct = ((idx + 0.5) / (entries.length - 1)) * 100;
+                    gradientStops.push(`${entry.color} ${nextPct}%`);
+                }
+            });
+            
+            return `linear-gradient(180deg, ${gradientStops.join(', ')})`;
+        }
+        
+        // Render the gradient river
+        function renderGradientRiver() {
+            const stream = document.getElementById('gradientStream');
+            const gradientCSS = buildContinuousGradient();
+            
+            stream.style.background = gradientCSS;
+            stream.style.height = `${entries.length * 60}px`;
+            
+            // Add day markers
+            stream.innerHTML = entries.map((entry, idx) => `
+                <div class="day-marker ${entry.id === activeEntryId ? 'active' : ''}"
+                     style="top: ${idx * 60}px"
+                     data-date="${entry.dateStr}"
+                     onclick="selectEntry(${entry.id})">
+                    <div class="gradient-ripple"></div>
+                </div>
+            `).join('');
+        }
+        
+        // Render entries list
+        function renderEntries() {
+            const container = document.getElementById('entriesList');
+            container.innerHTML = entries.map(entry => `
+                <div class="entry-card ${entry.id === activeEntryId ? 'active' : ''} ${!entry.hasEntry ? 'empty' : ''}"
+                     style="--card-color: ${entry.color}"
+                     data-id="${entry.id}"
+                     onclick="handleCardClick(${entry.id})">
+                    
+                    <div class="card-header">
+                        <span class="card-date">${entry.dateStr}</span>
+                        ${entry.hasEntry ? `<span class="card-mood" style="color: ${entry.color}">${getMoodName(entry.color)}</span>` : ''}
+                    </div>
+                    
+                    ${entry.hasEntry 
+                        ? `<div class="card-text">${entry.text}</div>`
+                        : `<div class="card-placeholder">Tap to add a note...</div>`
+                    }
+                    
+                    <div class="inline-input" onclick="event.stopPropagation()">
+                        <div class="input-types">
+                            <button class="type-pill active">✍️ Text</button>
+                            <button class="type-pill">🎙️ Voice</button>
+                            <button class="type-pill">📸 Photo</button>
+                        </div>
+                        <textarea id="input-${entry.id}" placeholder="How did ${entry.dateStr.toLowerCase()} feel?">${entry.text}</textarea>
+                        <div class="input-footer">
+                            <div class="color-hint">
+                                <div class="hint-dot" id="hint-${entry.id}"></div>
+                                <span class="hint-text" id="hint-text-${entry.id}">Type to see your color emerge...</span>
+                            </div>
+                            <div class="input-actions">
+                                <button class="btn btn-ghost" onclick="closeInput()">Cancel</button>
+                                <button class="btn btn-fill" onclick="saveEntry(${entry.id})" style="--btn-color: ${entry.color}">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add listeners
+            entries.forEach(entry => {
+                const textarea = document.getElementById(`input-${entry.id}`);
+                if (textarea) {
+                    let typingTimeout;
+                    textarea.addEventListener('input', (e) => {
+                        const result = analyzeText(e.target.value);
+                        updateHint(entry.id, result);
+                        
+                        textarea.classList.add('typing');
+                        clearTimeout(typingTimeout);
+                        typingTimeout = setTimeout(() => {
+                            textarea.classList.remove('typing');
+                        }, 500);
+                    });
+                }
+            });
+        }
+        
+        function getMoodName(color) {
+            const names = {
+                '#ff006e': 'Passion', '#fb5607': 'Fire', '#ffbe0b': 'Sunshine',
+                '#06ffa5': 'Growth', '#00b4d8': 'Clarity', '#3a86ff': 'Depth',
+                '#8338ec': 'Dream', '#7209b7': 'Mystery'
+            };
+            return names[color] || 'Moment';
+        }
+        
+        function handleCardClick(id) {
+            const entry = entries.find(e => e.id === id);
+            if (entry.hasEntry && entry.id !== activeEntryId) {
+                showModal(entry);
+            } else {
+                selectEntry(id);
+            }
+        }
+        
+        function selectEntry(id) {
+            activeEntryId = id;
+            renderGradientRiver();
+            renderEntries();
+            
+            const card = document.querySelector(`.entry-card[data-id="${id}"]`);
+            if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            setTimeout(() => {
+                const textarea = document.getElementById(`input-${id}`);
+                if (textarea) textarea.focus();
+            }, 300);
+        }
+        
+        function closeInput() {
+            activeEntryId = null;
+            renderGradientRiver();
+            renderEntries();
+        }
+        
+        function analyzeText(text) {
+            const lower = text.toLowerCase();
+            
+            if (lower.includes('sad') || lower.includes('heavy') || lower.includes('tired'))
+                return { color: '#3a86ff', name: 'Storm' };
+            if (lower.includes('anxious') || lower.includes('worried'))
+                return { color: '#7209b7', name: 'Fog' };
+            if (lower.includes('love') || lower.includes('happy') || lower.includes('joy'))
+                return { color: '#ff006e', name: 'Passion' };
+            if (lower.includes('energy') || lower.includes('excited'))
+                return { color: '#fb5607', name: 'Fire' };
+            if (lower.includes('calm') || lower.includes('peace'))
+                return { color: '#06ffa5', name: 'Growth' };
+            if (lower.includes('think') || lower.includes('reflect'))
+                return { color: '#8338ec', name: 'Dream' };
+            
+            return { color: '#ffbe0b', name: 'Sunshine' };
+        }
+        
+        function updateHint(id, result) {
+            const dot = document.getElementById(`hint-${id}`);
+            const text = document.getElementById(`hint-text-${id}`);
+            const btn = document.querySelector(`.entry-card[data-id="${id}"] .btn-fill`);
+            
+            if (dot) dot.style.setProperty('--hint-color', result.color);
+            if (text) text.textContent = result.name;
+            if (btn) btn.style.setProperty('--btn-color', result.color);
+        }
+        
+        function createParticles(x, y, color) {
+            for (let i = 0; i < 12; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.background = color;
+                const angle = (i / 12) * Math.PI * 2;
+                const distance = 50 + Math.random() * 50;
+                particle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+                particle.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+                particle.style.animation = `particleBurst 0.6s ease forwards`;
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 600);
+            }
+        }
+        
+        function saveEntry(id) {
+            const entry = entries.find(e => e.id === id);
+            const textarea = document.getElementById(`input-${id}`);
+            const text = textarea.value.trim();
+            
+            if (!text) return;
+            
+            const result = analyzeText(text);
+            entry.text = text;
+            entry.hasEntry = true;
+            entry.color = result.color;
+            
+            // Create particles at the marker position
+            const marker = document.querySelector(`.day-marker[data-date="${entry.dateStr}"]`);
+            if (marker) {
+                const rect = marker.getBoundingClientRect();
+                createParticles(rect.left + 30, rect.top + 30, result.color);
+            }
+            
+            activeEntryId = null;
+            
+            setTimeout(() => {
+                renderGradientRiver();
+                renderEntries();
+            }, 800);
+        }
+        
+        function showModal(entry) {
+            document.getElementById('modalGradient').style.background = entry.color;
+            document.getElementById('modalDate').textContent = entry.date.toLocaleDateString('en-US', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+            document.getElementById('modalMood').textContent = getMoodName(entry.color);
+            document.getElementById('modalMood').style.color = entry.color;
+            document.getElementById('modalText').textContent = entry.text;
+            document.getElementById('modal').classList.add('active');
+        }
+        
+        function closeModal(e) {
+            if (!e || e.target.id === 'modal') {
+                document.getElementById('modal').classList.remove('active');
+            }
+        }
+        
+        function jumpToToday() {
+            const todayEntry = entries.find(e => e.dateStr === 'Today');
+            if (todayEntry) selectEntry(todayEntry.id);
+        }
+        
+        // Initialize
+        renderGradientRiver();
+        renderEntries();
+    </script>
+</body>
+</html>
