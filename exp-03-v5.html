@@ -318,7 +318,8 @@
         }
         
         textarea.typing {
-            animation: pulse 1.5s ease infinite;
+            animation: pulse 1s ease infinite;
+            border-color: rgba(255,255,255,0.3);
         }
         
         .input-footer {
@@ -804,11 +805,11 @@
             
             activeEntryId = null;
             
-            // Delay re-render for animation
+            // Delay re-render for animation (let particles finish)
             setTimeout(() => {
                 renderHeroGradient();
                 renderEntries();
-            }, 300);
+            }, 800);
         }
         
         function showModal(entry) {
