@@ -536,13 +536,20 @@
         // Render unified list
         function renderList() {
             const list = document.getElementById('spectrumList');
-            list.innerHTML = entries.map(entry => `
+            list.innerHTML = entries.map((entry, idx) => {
+                const nextEntry = entries[idx + 1];
+                const nextColor = nextEntry ? (nextEntry.color || 'var(--border)') : (entry.color || 'var(--border)');
+                const gradientStyle = entry.hasEntry 
+                    ? `background: linear-gradient(180deg, ${entry.color} 0%, ${nextColor} 100%);`
+                    : '';
+                
+                return `
                 <div class="spectrum-item ${!entry.hasEntry ? 'empty' : ''} ${entry.id === activeEntryId ? 'active' : ''}" 
                      data-id="${entry.id}"
-                     style="--item-color: ${entry.color || 'var(--border)'}"
+                     style="--item-color: ${entry.color || 'var(--border)'}; --next-color: ${nextColor}"
                      onclick="handleItemClick(${entry.id}, event)">
                     
-                    <div class="item-gradient"></div>
+                    <div class="item-gradient" style="${gradientStyle}"></div>
                     
                     <div class="item-content-wrapper">
                         <div class="item-main">
@@ -573,7 +580,8 @@
                         </div>
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
             
             // Add input listeners
             entries.forEach(entry => {
@@ -596,15 +604,23 @@
             });
         }
         
-        // Render side mini gradient
+        // Render side mini gradient with blending
         function renderSidePanel() {
             const panel = document.getElementById('sidePanel');
-            panel.innerHTML = entries.map((entry, idx) => `
+            panel.innerHTML = entries.map((entry, idx) => {
+                const nextEntry = entries[idx + 1];
+                const nextColor = nextEntry ? (nextEntry.color || 'var(--border)') : (entry.color || 'var(--border)');
+                const gradientStyle = entry.hasEntry 
+                    ? `background: linear-gradient(180deg, ${entry.color} 0%, ${nextColor} 100%);`
+                    : `background: var(--border);`;
+                
+                return `
                 <div class="mini-slice ${entry.id === activeEntryId ? 'active' : ''}"
-                     style="--slice-color: ${entry.color || 'var(--border)'}"
+                     style="${gradientStyle}"
                      onclick="selectEntry(${entry.id})">
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
         
         function handleItemClick(id, event) {
