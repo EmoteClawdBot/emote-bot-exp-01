@@ -55,6 +55,46 @@
             font-weight: 600;
         }
         
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        @keyframes pop {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes celebrate {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.15) rotate(-2deg); }
+            50% { transform: scale(1.1) rotate(2deg); }
+            75% { transform: scale(1.05) rotate(-1deg); }
+            100% { transform: scale(1.08) translateX(8px); }
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255,255,255,0.1); }
+            50% { box-shadow: 0 0 40px rgba(255,255,255,0.3), 0 0 60px rgba(255,255,255,0.1); }
+        }
+        
+        @keyframes fillUp {
+            0% { clip-path: inset(100% 0 0 0); }
+            100% { clip-path: inset(0 0 0 0); }
+        }
+        
         /* Main Gradient Strip - The Hero */
         .hero-gradient {
             position: fixed;
@@ -74,19 +114,44 @@
             height: 60px;
             border-radius: 16px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
             overflow: hidden;
         }
         
+        .gradient-pill::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background-size: 200% 100%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .gradient-pill:hover::before {
+            opacity: 1;
+            animation: shimmer 1.5s ease infinite;
+        }
+        
         .gradient-pill:hover {
-            transform: scale(1.05) translateX(4px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            transform: scale(1.08) translateX(6px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+            animation: glow 2s ease infinite;
         }
         
         .gradient-pill.active {
-            transform: scale(1.08) translateX(8px);
-            box-shadow: 0 0 0 3px rgba(255,255,255,0.2), 0 12px 40px rgba(0,0,0,0.5);
+            transform: scale(1.1) translateX(10px);
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.3), 0 16px 50px rgba(0,0,0,0.6);
+            animation: celebrate 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .gradient-pill.filling {
+            animation: fillUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        .gradient-pill.new-entry {
+            animation: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         
         .pill-label {
@@ -135,16 +200,25 @@
             border-radius: 24px;
             padding: 28px;
             margin-bottom: 20px;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: pop 0.5s ease backwards;
+            animation-delay: calc(var(--index, 0) * 0.05s);
         }
         
         .entry-card:hover {
             background: var(--surface-hover);
+            transform: translateY(-2px);
         }
         
         .entry-card.active {
             background: linear-gradient(135deg, var(--card-color, var(--surface)) 0%, var(--surface) 100%);
-            box-shadow: 0 0 0 1px rgba(255,255,255,0.1);
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 20px 60px rgba(0,0,0,0.4);
+            transform: scale(1.02);
+            animation: pulse 2s ease infinite;
+        }
+        
+        .entry-card.saving {
+            animation: celebrate 0.6s ease;
         }
         
         .card-header {
@@ -234,11 +308,17 @@
             resize: none;
             min-height: 120px;
             font-family: inherit;
+            transition: all 0.3s ease;
         }
         
         textarea:focus {
             outline: none;
             border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.05);
+        }
+        
+        textarea.typing {
+            animation: pulse 1.5s ease infinite;
         }
         
         .input-footer {
@@ -260,6 +340,12 @@
             border-radius: 50%;
             background: var(--hint-color, var(--text-dim));
             box-shadow: 0 0 0 2px rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .entry-card.active .hint-dot {
+            animation: float 2s ease infinite;
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.1), 0 0 20px var(--hint-color, var(--text-dim));
         }
         
         .hint-text {
@@ -402,6 +488,20 @@
             transform: scale(1.1);
             box-shadow: 0 6px 32px rgba(255, 0, 110, 0.5);
         }
+        /* Celebration Particles */
+        .particle {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        @keyframes particleBurst {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -528,14 +628,14 @@
         // Render entries list
         function renderEntries() {
             const container = document.getElementById('entriesList');
-            container.innerHTML = entries.map(entry => {
+            container.innerHTML = entries.map((entry, idx) => {
                 const bgGradient = entry.hasEntry 
                     ? `linear-gradient(135deg, ${entry.gradient.from}20 0%, transparent 100%)`
                     : 'transparent';
                 
                 return `
                 <div class="entry-card ${entry.id === activeEntryId ? 'active' : ''} ${!entry.hasEntry ? 'empty' : ''}"
-                     style="--card-color: ${entry.gradient?.from || 'transparent'}"
+                     style="--card-color: ${entry.gradient?.from || 'transparent'}; --index: ${idx}"
                      data-id="${entry.id}"
                      onclick="handleCardClick(${entry.id})">
                     
@@ -575,9 +675,23 @@
             entries.forEach(entry => {
                 const textarea = document.getElementById(`input-${entry.id}`);
                 if (textarea) {
+                    let typingTimeout;
                     textarea.addEventListener('input', (e) => {
                         const result = analyzeText(e.target.value);
                         updateHint(entry.id, result);
+                        
+                        // Add typing animation
+                        textarea.classList.add('typing');
+                        clearTimeout(typingTimeout);
+                        typingTimeout = setTimeout(() => {
+                            textarea.classList.remove('typing');
+                        }, 500);
+                        
+                        // Update pill preview color
+                        const pill = document.querySelector(`.gradient-pill[data-id="${entry.id}"]`);
+                        if (pill && e.target.value.length > 5) {
+                            pill.style.filter = `hue-rotate(${result.from === '#3a86ff' ? '200deg' : result.from === '#ff006e' ? '0deg' : result.from === '#06ffa5' ? '140deg' : '40deg'})`;
+                        }
                     });
                 }
             });
@@ -644,6 +758,24 @@
             if (btn) btn.style.setProperty('--btn-color', `linear-gradient(135deg, ${result.from}, ${result.to})`);
         }
         
+        // Create celebration particles
+        function createParticles(x, y, color) {
+            for (let i = 0; i < 12; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.background = color;
+                const angle = (i / 12) * Math.PI * 2;
+                const distance = 50 + Math.random() * 50;
+                particle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+                particle.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+                particle.style.animation = `particleBurst 0.6s ease forwards`;
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 600);
+            }
+        }
+        
         function saveEntry(id) {
             const entry = entries.find(e => e.id === id);
             const textarea = document.getElementById(`input-${id}`);
@@ -656,9 +788,27 @@
             entry.hasEntry = true;
             entry.gradient = result;
             
+            // Find the pill and add animation
+            const pill = document.querySelector(`.gradient-pill[data-id="${id}"]`);
+            if (pill) {
+                const rect = pill.getBoundingClientRect();
+                createParticles(rect.left + rect.width/2, rect.top + rect.height/2, result.from);
+                pill.classList.add('new-entry');
+            }
+            
+            // Animate the card
+            const card = document.querySelector(`.entry-card[data-id="${id}"]`);
+            if (card) {
+                card.classList.add('saving');
+            }
+            
             activeEntryId = null;
-            renderHeroGradient();
-            renderEntries();
+            
+            // Delay re-render for animation
+            setTimeout(() => {
+                renderHeroGradient();
+                renderEntries();
+            }, 300);
         }
         
         function showModal(entry) {
