@@ -81,7 +81,7 @@
 Voice       [████████████████████] 100%  🟢
 3D Viz      [████████████████████] 100%  🟢
 Packaging   [████████████████████] 100%  🟢
-Reminders   [████████░░░░░░░░░░░░] 40%   🟡  (6 failures, HEARTBEAT.md fixed)
+Reminders   [████████░░░░░░░░░░░░] 40%   🟡  (7 failures, delivery routing issue)
 ```
 
 ---

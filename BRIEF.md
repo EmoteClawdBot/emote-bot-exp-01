@@ -26,19 +26,26 @@
   - exp-02: 🔄 Awaiting direction (cinematic version ready)
 - **Spectrum (exp-03)**: 🔄 v0.1 prototype live, Hriday designing UI
 - **Voice System**: ✅ Fully operational
-- **Reminder System**: 🔄 TESTING — HEARTBEAT.md fixed, cron fires 9 AM today
+- **Reminder System**: ❌ 7th FAILURE — delivery routing issue identified
 
 ### Today's Focus
-1. **Monitor Daily Brief cron** — confirm 9 AM delivery works
+1. **Fix Daily Brief delivery** — systemEvent doesn't auto-route to Telegram
 2. Hriday's Spectrum UI designs (when ready)
 
 ### Notes
 - Feb 20: HEARTBEAT.md was empty — fixed and committed
-- Feb 21 9 AM: Testing if cron wake-up + brief delivery works
+- Feb 21 9 AM: Cron fired OK, but message didn't reach Hriday
+- **Root cause**: systemEvent wake-ups don't route replies to Telegram channel
+- **Fix needed**: Use `message` tool proactively OR reconfigure cron for direct delivery
 
 ---
 
 ## Archive
+
+### 2026-02-21
+- 7th Daily Brief failure — delivery routing issue found
+- Cron fires successfully but systemEvent replies don't route to Telegram
+- Identified fix: proactive `message` tool use or cron direct delivery
 
 ### 2026-02-19
 - 6th Daily Brief failure documented
