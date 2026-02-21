@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spectrum — Your Life as a Gradient</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg: #0d0d12;
+            --surface: #16161f;
+            --surface-hover: #1e1e2a;
+            --surface-active: #252533;
+            --border: #2a2a3d;
+            --border-active: #3a3a52;
+            --text: #f0f0f5;
+            --text-dim: #6b6b7b;
+            --accent: #f4a261;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'SF Pro Display', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            padding: 20px 32px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #ff006e, #f4a261);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .brand h1 {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+        
+        .view-toggle {
+            display: flex;
+            gap: 4px;
+            background: var(--surface);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        
+        .view-btn {
+            padding: 6px 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-dim);
+            font-size: 13px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+        
+        .view-btn.active {
+            background: var(--surface-active);
+            color: var(--text);
+        }
+        
+        /* Main Layout */
+        .main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        /* List View (Linear Style) */
+        .list-container {
+            flex: 1;
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            overflow-y: auto;
+        }
+        
+        .list-header {
+            margin-bottom: 32px;
+        }
+        
+        .list-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        
+        .list-header p {
+            color: var(--text-dim);
+            font-size: 15px;
+        }
+        
+        /* Timeline List */
+        .timeline-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+        }
+        
+        .timeline-item:hover {
+            background: var(--surface-hover);
+        }
+        
+        .timeline-item.active {
+            background: var(--surface-active);
+            border: 1px solid var(--border-active);
+        }
+        
+        .item-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .item-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--item-color, var(--text-dim));
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-item.active .item-indicator {
+            width: 10px;
+            height: 10px;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.1);
+        }
+        
+        .item-text {
+            font-size: 15px;
+            color: var(--text);
+            font-weight: 400;
+        }
+        
+        .timeline-item.active .item-text {
+            font-weight: 500;
+        }
+        
+        .item-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .item-date {
+            font-size: 13px;
+            color: var(--text-dim);
+            font-weight: 400;
+        }
+        
+        .timeline-item.active .item-date {
+            color: var(--text);
+            font-weight: 500;
+        }
+        
+        .item-line {
+            width: 20px;
+            height: 2px;
+            background: var(--border);
+            border-radius: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-item.active .item-line {
+            width: 28px;
+            height: 3px;
+            background: var(--item-color, var(--accent));
+        }
+        
+        /* Input Area (appears when item selected) */
+        .input-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 20px 32px;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
+        }
+        
+        .input-panel.active {
+            transform: translateY(0);
+        }
+        
+        .input-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .input-date {
+            font-size: 13px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .input-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .input-action {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-dim);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.2s ease;
+        }
+        
+        .input-action:hover {
+            background: var(--surface-hover);
+            color: var(--text);
+        }
+        
+        .input-action.active {
+            background: var(--surface-active);
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+        
+        textarea {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            color: var(--text);
+            font-size: 16px;
+            line-height: 1.6;
+            resize: none;
+            min-height: 100px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--border-active);
+        }
+        
+        .color-preview-bar {
+            height: 4px;
+            background: var(--item-color, var(--accent));
+            border-radius: 2px;
+            margin-top: 12px;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+        
+        .input-panel.has-content .color-preview-bar {
+            opacity: 1;
+        }
+        
+        .input-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+        }
+        
+        .color-swatch {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .swatch-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--item-color, var(--accent));
+            box-shadow: 0 0 0 2px var(--surface), 0 0 0 3px var(--border);
+        }
+        
+        .swatch-label {
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-text {
+            background: transparent;
+            color: var(--text-dim);
+        }
+        
+        .btn-text:hover {
+            color: var(--text);
+        }
+        
+        .btn-primary {
+            background: var(--item-color, var(--accent));
+            color: #0d0d12;
+        }
+        
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        /* Gradient Strip (Bottom) */
+        .gradient-strip-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 12px 32px;
+            z-index: 50;
+            transition: transform 0.3s ease;
+        }
+        
+        .gradient-strip-container.input-open {
+            transform: translateY(100%);
+        }
+        
+        .strip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .strip-label {
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        
+        .strip-nav {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .strip-nav-btn {
+            font-size: 11px;
+            color: var(--text-dim);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        
+        .strip-nav-btn.active {
+            color: var(--text);
+            background: var(--surface-hover);
+        }
+        
+        .gradient-strip {
+            height: 40px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            cursor: pointer;
+        }
+        
+        .day-slice {
+            flex: 1;
+            height: 100%;
+            position: relative;
+            transition: all 0.3s ease;
+            min-width: 4px;
+        }
+        
+        .day-slice:hover {
+            z-index: 10;
+            box-shadow: 0 0 0 2px var(--text);
+        }
+        
+        .day-slice.empty {
+            background: var(--surface-hover);
+        }
+        
+        .day-slice.filled {
+            background: var(--slice-color, var(--accent));
+        }
+        
+        .day-slice.today {
+            box-shadow: 0 0 0 2px var(--text);
+        }
+        
+        /* Detail Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .modal-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            max-width: 480px;
+            width: 100%;
+            overflow: hidden;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            height: 120px;
+            background: var(--modal-color, var(--accent));
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.3);
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 24px;
+        }
+        
+        .modal-date {
+            font-size: 12px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+        
+        .modal-text {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        
+        /* FAB for new entry */
+        .fab {
+            position: fixed;
+            bottom: 100px;
+            right: 32px;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: none;
+            color: #0d0d12;
+            font-size: 24px;
+            font-weight: 300;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(244, 162, 97, 0.3);
+            transition: all 0.2s ease;
+            z-index: 90;
+        }
+        
+        .fab:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 30px rgba(244, 162, 97, 0.4);
+        }
+        
+        .fab.input-open {
+            transform: scale(0);
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="brand">
+            <div class="brand-icon">◐</div>
+            <h1>Spectrum</h1>
+        </div>
+        <div class="view-toggle">
+            <button class="view-btn active" data-view="list">List</button>
+            <button class="view-btn" data-view="grid">Grid</button>
+            <button class="view-btn" data-view="timeline">Timeline</button>
+        </div>
+    </header>
+    
+    <main class="main">
+        <div class="list-container">
+            <div class="list-header">
+                <h2>Your moments</h2>
+                <p>Select a day to add a note, voice, or photo</p>
+            </div>
+            
+            <div class="timeline-list" id="timelineList">
+                <!-- Items will be generated -->
+            </div>
+        </div>
+    </main>
+    
+    <!-- Gradient Strip -->
+    <div class="gradient-strip-container" id="gradientStrip">
+        <div class="strip-header">
+            <span class="strip-label">Your Life as a Gradient</span>
+            <div class="strip-nav">
+                <button class="strip-nav-btn active">90 days</button>
+                <button class="strip-nav-btn">Year</button>
+                <button class="strip-nav-btn">Life</button>
+            </div>
+        </div>
+        <div class="gradient-strip" id="gradientContent"></div>
+    </div>
+    
+    <!-- Input Panel -->
+    <div class="input-panel" id="inputPanel">
+        <div class="input-header">
+            <span class="input-date" id="inputDate">February 21, 2026</span>
+            <div class="input-actions">
+                <button class="input-action" data-type="text" title="Text">✍️</button>
+                <button class="input-action" data-type="voice" title="Voice">🎙️</button>
+                <button class="input-action" data-type="photo" title="Photo">📸</button>
+            </div>
+        </div>
+        <textarea id="entryInput" placeholder="How did this day feel? What color would you give it?"></textarea>
+        <div class="color-preview-bar" id="colorBar"></div>
+        <div class="input-footer">
+            <div class="color-swatch">
+                <div class="swatch-dot" id="swatchDot"></div>
+                <span class="swatch-label" id="swatchLabel">Amber</span>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-text" onclick="closeInput()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveEntry()">Add to Timeline</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FAB -->
+    <button class="fab" id="fab" onclick="createNewEntry()">+</button>
+    
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-header" id="modalHeader">
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-date" id="modalDate"></div>
+                <p class="modal-text" id="modalText"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate last 30 days
+        const entries = [];
+        const today = new Date();
+        
+        const moodColors = [
+            { h: 340, name: 'Rose', desc: 'tender, connected' },
+            { h: 25, name: 'Amber', desc: 'warm, optimistic' },
+            { h: 45, name: 'Gold', desc: 'energetic, bright' },
+            { h: 160, name: 'Teal', desc: 'calm, focused' },
+            { h: 200, name: 'Ocean', desc: 'deep, peaceful' },
+            { h: 260, name: 'Violet', desc: 'contemplative' },
+        ];
+        
+        const sampleTexts = [
+            "Today felt light. Productive morning.",
+            "Heavy day, but the sunset was beautiful.",
+            "Quiet. Just what I needed.",
+            "Started something new. So much energy!",
+            "Reflective. Thinking about the future.",
+            "Deep talks with people I love.",
+            "Challenging, but I showed up.",
+        ];
+        
+        for (let i = 29; i >= 0; i--) {
+            const date = new Date(today);
+            date.setDate(date.getDate() - i);
+            
+            // 60% have entries
+            if (Math.random() > 0.4 || i === 0) {
+                const mood = moodColors[Math.floor(Math.random() * moodColors.length)];
+                entries.push({
+                    id: date.getTime(),
+                    date: date,
+                    dateStr: formatDate(date),
+                    text: i === 0 ? '' : sampleTexts[Math.floor(Math.random() * sampleTexts.length)],
+                    color: `hsl(${mood.h}, 75%, 60%)`,
+                    colorName: mood.name,
+                    hasEntry: i !== 0
+                });
+            } else {
+                entries.push({
+                    id: Date.now() + i,
+                    date: date,
+                    dateStr: formatDate(date),
+                    text: '',
+                    hasEntry: false
+                });
+            }
+        }
+        
+        function formatDate(date) {
+            const now = new Date();
+            const diff = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+            
+            if (diff === 0) return 'Today';
+            if (diff === 1) return 'Yesterday';
+            if (diff < 7) return `${diff} days ago`;
+            
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        
+        let selectedEntry = null;
+        
+        // Render list
+        function renderList() {
+            const list = document.getElementById('timelineList');
+            list.innerHTML = entries.map(entry => `
+                <div class="timeline-item ${!entry.hasEntry ? 'empty' : ''}" 
+                     data-id="${entry.id}"
+                     style="--item-color: ${entry.color || 'var(--text-dim)'}"
+                     onclick="selectEntry(${entry.id})">
+                    <div class="item-content">
+                        <div class="item-indicator"></div>
+                        <span class="item-text">${entry.text || 'No entry yet...'}</span>
+                    </div>
+                    <div class="item-meta">
+                        <span class="item-date">${entry.dateStr}</span>
+                        <div class="item-line"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Render gradient strip
+        function renderGradient() {
+            const strip = document.getElementById('gradientContent');
+            strip.innerHTML = entries.map(entry => `
+                <div class="day-slice ${entry.hasEntry ? 'filled' : 'empty'} ${entry.dateStr === 'Today' ? 'today' : ''}"
+                     style="--slice-color: ${entry.color || 'transparent'}"
+                     onclick="showModal(${entry.id})">
+                </div>
+            `).join('');
+        }
+        
+        // Select entry
+        function selectEntry(id) {
+            // Remove active from all
+            document.querySelectorAll('.timeline-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active to selected
+            const item = document.querySelector(`[data-id="${id}"]`);
+            if (item) item.classList.add('active');
+            
+            selectedEntry = entries.find(e => e.id === id);
+            
+            if (selectedEntry) {
+                openInput(selectedEntry);
+            }
+        }
+        
+        // Input panel
+        function openInput(entry) {
+            document.getElementById('inputDate').textContent = entry.date.toLocaleDateString('en-US', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+            document.getElementById('entryInput').value = entry.text;
+            document.getElementById('inputPanel').classList.add('active');
+            document.getElementById('gradientStrip').classList.add('input-open');
+            document.getElementById('fab').classList.add('input-open');
+            
+            updateColorPreview(entry.color || 'hsl(30, 75%, 60%)');
+            
+            setTimeout(() => document.getElementById('entryInput').focus(), 100);
+        }
+        
+        function closeInput() {
+            document.getElementById('inputPanel').classList.remove('active');
+            document.getElementById('gradientStrip').classList.remove('input-open');
+            document.getElementById('fab').classList.remove('input-open');
+            document.querySelectorAll('.timeline-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            selectedEntry = null;
+        }
+        
+        function createNewEntry() {
+            const todayEntry = entries.find(e => e.dateStr === 'Today');
+            if (todayEntry) {
+                selectEntry(todayEntry.id);
+            }
+        }
+        
+        // Color analysis
+        document.getElementById('entryInput').addEventListener('input', (e) => {
+            const text = e.target.value;
+            const panel = document.getElementById('inputPanel');
+            
+            if (text.length > 5) {
+                panel.classList.add('has-content');
+                const color = analyzeText(text);
+                updateColorPreview(color);
+            } else {
+                panel.classList.remove('has-content');
+            }
+        });
+        
+        function analyzeText(text) {
+            const lower = text.toLowerCase();
+            
+            if (lower.includes('love') || lower.includes('happy') || lower.includes('joy'))
+                return 'hsl(340, 75%, 60%)'; // Rose
+            if (lower.includes('energy') || lower.includes('excited') || lower.includes('new'))
+                return 'hsl(25, 80%, 55%)'; // Amber
+            if (lower.includes('calm') || lower.includes('peace') || lower.includes('quiet'))
+                return 'hsl(160, 60%, 50%)'; // Teal
+            if (lower.includes('think') || lower.includes('reflect') || lower.includes('deep'))
+                return 'hsl(260, 60%, 55%)'; // Violet
+            
+            return 'hsl(30, 75%, 60%)'; // Default gold
+        }
+        
+        function updateColorPreview(color) {
+            document.getElementById('colorBar').style.background = color;
+            document.getElementById('swatchDot').style.background = color;
+            document.querySelector('.btn-primary').style.background = color;
+            
+            const hue = parseInt(color.match(/\d+/)[0]);
+            const names = { 340: 'Rose', 25: 'Amber', 45: 'Gold', 160: 'Teal', 200: 'Ocean', 260: 'Violet', 30: 'Amber' };
+            document.getElementById('swatchLabel').textContent = names[hue] || 'Custom';
+        }
+        
+        function saveEntry() {
+            if (!selectedEntry) return;
+            
+            const text = document.getElementById('entryInput').value;
+            if (!text.trim()) return;
+            
+            selectedEntry.text = text;
+            selectedEntry.hasEntry = true;
+            selectedEntry.color = analyzeText(text);
+            
+            renderList();
+            renderGradient();
+            closeInput();
+        }
+        
+        // Modal
+        function showModal(id) {
+            const entry = entries.find(e => e.id === id);
+            if (!entry || !entry.hasEntry) return;
+            
+            document.getElementById('modalHeader').style.background = entry.color;
+            document.getElementById('modalDate').textContent = entry.date.toLocaleDateString('en-US', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+            document.getElementById('modalText').textContent = entry.text;
+            document.getElementById('modal').classList.add('active');
+        }
+        
+        function closeModal(e) {
+            if (!e || e.target.id === 'modal') {
+                document.getElementById('modal').classList.remove('active');
+            }
+        }
+        
+        // Input type toggle
+        document.querySelectorAll('.input-action').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.input-action').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+        
+        // Initialize
+        renderList();
+        renderGradient();
+    </script>
+</body>
+</html>
