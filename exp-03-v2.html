@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spectrum — Your Life as a Gradient</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg: #0a0a0f;
+            --surface: rgba(18, 18, 26, 0.95);
+            --surface-hover: rgba(26, 26, 37, 0.95);
+            --border: rgba(42, 42, 58, 0.8);
+            --text: #e4e4e7;
+            --text-dim: #71717a;
+            --accent: #f97316;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            padding: 24px 40px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+            background: var(--surface);
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+        
+        .header h1 span {
+            color: var(--accent);
+        }
+        
+        /* Mode Selector */
+        .mode-selector {
+            display: flex;
+            gap: 8px;
+            background: rgba(0,0,0,0.3);
+            padding: 4px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        
+        .mode-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: var(--text-dim);
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        
+        .mode-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .mode-btn:hover {
+            color: var(--text);
+        }
+        
+        /* ========== MODE 1: GRADIENT AS BACKGROUND ========== */
+        .mode-bg .page-background {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: linear-gradient(135deg, 
+                #1a0a2e 0%,
+                #2d1b4e 20%,
+                #4a1c6b 40%,
+                #6b2d5c 60%,
+                #8b3a3a 80%,
+                #c75b39 100%
+            );
+            opacity: 0.6;
+        }
+        
+        .mode-bg .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* ========== MODE 2: GRADIENT IN CARDS ========== */
+        .mode-cards .timeline-card {
+            background: linear-gradient(135deg, var(--surface) 0%, rgba(255,255,255,0.03) 100%);
+            border-left: 4px solid var(--card-color, var(--accent));
+        }
+        
+        .mode-cards .timeline-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--card-color, var(--accent));
+            border-radius: 4px 0 0 4px;
+        }
+        
+        /* ========== MODE 3: GRADIENT AS THREAD ========== */
+        .mode-thread .thread-container {
+            position: relative;
+        }
+        
+        .mode-thread .connecting-thread {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            transform: translateX(-50%);
+            background: linear-gradient(180deg,
+                #ff006e 0%,
+                #fb5607 20%,
+                #ffbe0b 40%,
+                #8338ec 60%,
+                #3a86ff 80%,
+                #06ffa5 100%
+            );
+            border-radius: 2px;
+            z-index: 0;
+        }
+        
+        .mode-thread .timeline-cards-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Timeline Container (shared) */
+        .timeline-container {
+            position: relative;
+            padding: 60px 40px;
+            min-height: calc(100vh - 200px);
+        }
+        
+        .timeline-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .timeline-header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+        
+        .timeline-header p {
+            color: var(--text-dim);
+            font-size: 16px;
+        }
+        
+        /* Timeline Grid (Mode 1 & 2) */
+        .timeline-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Timeline Card */
+        .timeline-card {
+            position: relative;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .timeline-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(249,115,22,0.3);
+        }
+        
+        .card-date {
+            font-size: 12px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        
+        .card-color-bar {
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            background: var(--card-color, var(--accent));
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .card-desc {
+            font-size: 14px;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+        
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .card-type {
+            font-size: 12px;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .card-mood {
+            font-size: 11px;
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            color: var(--card-color, var(--accent));
+        }
+        
+        /* Thread Layout (Mode 3) */
+        .thread-layout {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .thread-card {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .thread-card:nth-child(odd) {
+            flex-direction: row-reverse;
+        }
+        
+        .thread-card:nth-child(odd) .thread-content {
+            text-align: right;
+            padding-right: 40px;
+            padding-left: 0;
+        }
+        
+        .thread-content {
+            flex: 1;
+            padding-left: 40px;
+        }
+        
+        .thread-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--card-color, var(--accent));
+            border: 4px solid var(--bg);
+            box-shadow: 0 0 0 2px var(--card-color, var(--accent));
+            z-index: 2;
+        }
+        
+        .thread-card-content {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            display: inline-block;
+            max-width: 300px;
+        }
+        
+        /* Modal Detail View */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .modal-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            height: 200px;
+            background: var(--modal-color, var(--accent));
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.3);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .modal-close:hover {
+            background: rgba(0,0,0,0.5);
+        }
+        
+        .modal-body {
+            padding: 32px;
+        }
+        
+        .modal-date {
+            font-size: 12px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        
+        .modal-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .modal-text {
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--text-dim);
+        }
+        
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(249,115,22,0.4);
+            transition: all 0.3s ease;
+            z-index: 50;
+        }
+        
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(249,115,22,0.5);
+        }
+        
+        /* Add Entry Panel */
+        .entry-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 32px 40px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            z-index: 60;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .entry-panel.active {
+            transform: translateY(0);
+        }
+        
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .entry-header h3 {
+            font-size: 20px;
+        }
+        
+        .entry-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .entry-option {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .entry-option:hover {
+            background: var(--surface-hover);
+            border-color: var(--accent);
+        }
+        
+        .entry-option.selected {
+            background: var(--surface-hover);
+            border-color: var(--accent);
+        }
+        
+        .entry-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        
+        .entry-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        textarea {
+            width: 100%;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            color: var(--text);
+            font-size: 16px;
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .entry-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+    </style>
+</head>
+<body class="mode-bg">
+    <!-- Page Background (Mode 1) -->
+    <div class="page-background"></div>
+    
+    <div class="content-wrapper">
+        <header class="header">
+            <h1>Spec<span>trum</span></h1>
+            <div class="mode-selector">
+                <button class="mode-btn active" data-mode="bg">Background Gradient</button>
+                <button class="mode-btn" data-mode="cards">Gradient in Cards</button>
+                <button class="mode-btn" data-mode="thread">Gradient Thread</button>
+            </div>
+        </header>
+        
+        <div class="timeline-container">
+            <div class="timeline-header">
+                <h2>Your Life, Visualized</h2>
+                <p>Each moment becomes a color in your spectrum</p>
+            </div>
+            
+            <!-- Grid Layout (Modes 1 & 2) -->
+            <div class="timeline-grid" id="timelineGrid"></div>
+            
+            <!-- Thread Layout (Mode 3) -->
+            <div class="thread-layout thread-container" id="threadLayout" style="display: none;">
+                <div class="connecting-thread"></div>
+                <div class="timeline-cards-wrapper" id="threadCards"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-header" id="modalHeader">
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-date" id="modalDate"></div>
+                <h3 class="modal-title" id="modalTitle"></h3>
+                <p class="modal-text" id="modalText"></p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FAB -->
+    <button class="fab" onclick="openEntryPanel()">+</button>
+    
+    <!-- Entry Panel -->
+    <div class="entry-panel" id="entryPanel">
+        <div class="entry-header">
+            <h3>Capture a Moment</h3>
+            <button class="modal-close" onclick="closeEntryPanel()">×</button>
+        </div>
+        <div class="entry-options">
+            <div class="entry-option" data-type="text">
+                <div class="entry-icon">✍️</div>
+                <div class="entry-name">Journal Entry</div>
+            </div>
+            <div class="entry-option" data-type="voice">
+                <div class="entry-icon">🎙️</div>
+                <div class="entry-name">Voice Note</div>
+            </div>
+            <div class="entry-option" data-type="image">
+                <div class="entry-icon">📸</div>
+                <div class="entry-name">Photo + Note</div>
+            </div>
+        </div>
+        <textarea id="entryText" placeholder="How are you feeling right now? What's the color of this moment?"></textarea>
+        <div class="entry-actions">
+            <button class="btn btn-secondary" onclick="closeEntryPanel()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveEntry()">Add to Timeline</button>
+        </div>
+    </div>
+
+    <script>
+        // Sample data with vibrant colors
+        const entries = [
+            {
+                id: 1,
+                date: 'February 21, 2026',
+                title: 'The Breakthrough',
+                text: 'Finally solved the cron delivery issue. After 7 failures, the routing is clear.',
+                color: '#ff006e',
+                mood: 'Energetic',
+                type: 'text'
+            },
+            {
+                id: 2,
+                date: 'February 20, 2026',
+                title: 'Empty Heartbeat',
+                text: 'Discovered the HEARTBEAT.md was empty. That was causing all the wake-up failures.',
+                color: '#8338ec',
+                mood: 'Contemplative',
+                type: 'voice'
+            },
+            {
+                id: 3,
+                date: 'February 18, 2026',
+                title: 'Spectrum Begins',
+                text: 'Started building the life timeline concept. Your life as a gradient of moments.',
+                color: '#fb5607',
+                mood: 'Creative',
+                type: 'text'
+            },
+            {
+                id: 4,
+                date: 'February 15, 2026',
+                title: 'Design Direction',
+                text: 'Hriday wants the UI to feel like a curated design gallery. Clean cards, modal showcase.',
+                color: '#ffbe0b',
+                mood: 'Inspired',
+                type: 'text'
+            },
+            {
+                id: 5,
+                date: 'February 12, 2026',
+                title: 'exp-02 Paused',
+                text: 'The cinematic speaker render is ready, waiting for direction on what story to tell.',
+                color: '#3a86ff',
+                mood: 'Patient',
+                type: 'image'
+            },
+            {
+                id: 6,
+                date: 'February 9, 2026',
+                title: 'Partnership Forged',
+                text: 'Established the design partnership workflow. Hriday designs, I build.',
+                color: '#06ffa5',
+                mood: 'Connected',
+                type: 'text'
+            },
+            {
+                id: 7,
+                date: 'February 5, 2026',
+                title: 'Voice System Live',
+                text: 'Bidirectional voice is working. Whisper in, Edge TTS out.',
+                color: '#06ffa5',
+                mood: 'Accomplished',
+                type: 'voice'
+            },
+            {
+                id: 8,
+                date: 'February 1, 2026',
+                title: 'exp-01 Complete',
+                text: 'The wireframe 3D speaker is live on GitHub Pages. Auto-rotate, procedural audio.',
+                color: '#ffbe0b',
+                mood: 'Proud',
+                type: 'text'
+            }
+        ];
+        
+        let currentMode = 'bg';
+        
+        // Mode switching
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                currentMode = btn.dataset.mode;
+                document.body.className = `mode-${currentMode}`;
+                
+                if (currentMode === 'thread') {
+                    document.getElementById('timelineGrid').style.display = 'none';
+                    document.getElementById('threadLayout').style.display = 'block';
+                    renderThread();
+                } else {
+                    document.getElementById('timelineGrid').style.display = 'grid';
+                    document.getElementById('threadLayout').style.display = 'none';
+                    renderGrid();
+                }
+            });
+        });
+        
+        // Render grid layout
+        function renderGrid() {
+            const grid = document.getElementById('timelineGrid');
+            grid.innerHTML = entries.map(entry => `
+                <div class="timeline-card" 
+                     style="--card-color: ${entry.color}"
+                     onclick="openModal(${entry.id})">
+                    <div class="card-date">${entry.date}</div>
+                    <div class="card-color-bar"></div>
+                    <h3 class="card-title">${entry.title}</h3>
+                    <p class="card-desc">${entry.text.substring(0, 80)}...</p>
+                    <div class="card-meta">
+                        <span class="card-type">${getTypeIcon(entry.type)} ${entry.type}</span>
+                        <span class="card-mood">${entry.mood}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Render thread layout
+        function renderThread() {
+            const container = document.getElementById('threadCards');
+            container.innerHTML = entries.map(entry => `
+                <div class="thread-card" onclick="openModal(${entry.id})">
+                    <div class="thread-content">
+                        <div class="thread-card-content" style="border-left: 4px solid ${entry.color}">
+                            <div class="card-date">${entry.date}</div>
+                            <h3 class="card-title">${entry.title}</h3>
+                            <p class="card-desc">${entry.text.substring(0, 60)}...</p>
+                        </div>
+                    </div>
+                    <div class="thread-dot" style="background: ${entry.color}; box-shadow: 0 0 0 2px ${entry.color}"></div>
+                    <div class="thread-content" style="flex: 1;"></div>
+                </div>
+            `).join('');
+        }
+        
+        function getTypeIcon(type) {
+            const icons = { text: '✍️', voice: '🎙️', image: '📸' };
+            return icons[type] || '📝';
+        }
+        
+        // Modal functions
+        function openModal(id) {
+            const entry = entries.find(e => e.id === id);
+            if (!entry) return;
+            
+            document.getElementById('modalHeader').style.background = entry.color;
+            document.getElementById('modalHeader').style.setProperty('--modal-color', entry.color);
+            document.getElementById('modalDate').textContent = entry.date;
+            document.getElementById('modalTitle').textContent = entry.title;
+            document.getElementById('modalText').textContent = entry.text;
+            document.getElementById('modal').classList.add('active');
+        }
+        
+        function closeModal(e) {
+            if (!e || e.target.id === 'modal') {
+                document.getElementById('modal').classList.remove('active');
+            }
+        }
+        
+        // Entry panel
+        function openEntryPanel() {
+            document.getElementById('entryPanel').classList.add('active');
+        }
+        
+        function closeEntryPanel() {
+            document.getElementById('entryPanel').classList.remove('active');
+            document.getElementById('entryText').value = '';
+            document.querySelectorAll('.entry-option').forEach(o => o.classList.remove('selected'));
+        }
+        
+        document.querySelectorAll('.entry-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.entry-option').forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+            });
+        });
+        
+        function saveEntry() {
+            const text = document.getElementById('entryText').value;
+            if (!text.trim()) return;
+            
+            const colors = ['#ff006e', '#fb5607', '#ffbe0b', '#8338ec', '#3a86ff', '#06ffa5'];
+            const moods = ['Energetic', 'Creative', 'Inspired', 'Contemplative', 'Calm', 'Connected'];
+            
+            const newEntry = {
+                id: Date.now(),
+                date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+                title: 'New Entry',
+                text: text,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                mood: moods[Math.floor(Math.random() * moods.length)],
+                type: 'text'
+            };
+            
+            entries.unshift(newEntry);
+            
+            if (currentMode === 'thread') {
+                renderThread();
+            } else {
+                renderGrid();
+            }
+            
+            closeEntryPanel();
+        }
+        
+        // Initialize
+        renderGrid();
+    </script>
+</body>
+</html>
