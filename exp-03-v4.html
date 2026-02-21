@@ -639,15 +639,35 @@
         function analyzeText(text) {
             const lower = text.toLowerCase();
             
+            // Sad / Heavy / Drained (Cool blues and grays)
+            if (lower.includes('sad') || lower.includes('heavy') || lower.includes('tired') || 
+                lower.includes('exhausted') || lower.includes('drained') || lower.includes('blue') ||
+                lower.includes('down') || lower.includes('low') || lower.includes('empty') ||
+                lower.includes('lonely') || lower.includes('numb') || lower.includes('gloomy'))
+                return { color: 'hsl(210, 40%, 45%)', name: 'Storm' };
+            
+            // Anxious / Stressed (Muted purple-gray)
+            if (lower.includes('anxious') || lower.includes('worried') || lower.includes('stressed') ||
+                lower.includes('tense') || lower.includes('overwhelmed') || lower.includes('frantic'))
+                return { color: 'hsl(280, 25%, 45%)', name: 'Fog' };
+            
+            // Love / Happy / Joy (Warm pink)
             if (lower.includes('love') || lower.includes('happy') || lower.includes('joy') || lower.includes('connected'))
                 return { color: 'hsl(340, 70%, 55%)', name: 'Rose' };
+            
+            // Energy / Excited / New (Warm orange)
             if (lower.includes('energy') || lower.includes('excited') || lower.includes('new') || lower.includes('fire'))
                 return { color: 'hsl(25, 75%, 50%)', name: 'Amber' };
+            
+            // Calm / Peace / Quiet (Teal/green)
             if (lower.includes('calm') || lower.includes('peace') || lower.includes('quiet') || lower.includes('focus'))
                 return { color: 'hsl(160, 60%, 45%)', name: 'Teal' };
+            
+            // Think / Reflect / Deep (Purple)
             if (lower.includes('think') || lower.includes('reflect') || lower.includes('deep') || lower.includes('contemplate'))
                 return { color: 'hsl(260, 60%, 50%)', name: 'Violet' };
             
+            // Default
             return { color: 'hsl(45, 70%, 55%)', name: 'Gold' };
         }
         
