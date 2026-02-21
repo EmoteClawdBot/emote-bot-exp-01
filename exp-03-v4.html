@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spectrum — Your Life as a Gradient</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --surface-hover: #1a1a25;
+            --surface-active: #222230;
+            --border: #2a2a3a;
+            --border-active: #3a3a4d;
+            --text: #f0f0f5;
+            --text-dim: #5a5a6a;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            padding: 20px 32px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #ff006e, #f4a261);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .brand h1 {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+        
+        /* Main Container */
+        .main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            padding: 40px 24px;
+            overflow-y: auto;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 640px;
+        }
+        
+        .header-section {
+            margin-bottom: 32px;
+        }
+        
+        .header-section h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        
+        .header-section p {
+            color: var(--text-dim);
+            font-size: 15px;
+        }
+        
+        /* Unified List-Gradient */
+        .spectrum-list {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .spectrum-item {
+            display: flex;
+            align-items: stretch;
+            min-height: 64px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        
+        .spectrum-item:hover {
+            background: var(--surface-hover);
+        }
+        
+        .spectrum-item.active {
+            background: var(--surface-active);
+        }
+        
+        /* Gradient Bar - Left Side */
+        .item-gradient {
+            width: 6px;
+            min-height: 64px;
+            background: var(--item-color, var(--border));
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        
+        .spectrum-item:hover .item-gradient {
+            width: 8px;
+        }
+        
+        .spectrum-item.active .item-gradient {
+            width: 10px;
+        }
+        
+        .spectrum-item.empty .item-gradient {
+            background: var(--border);
+        }
+        
+        /* Content */
+        .item-content-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            gap: 16px;
+        }
+        
+        .item-main {
+            flex: 1;
+        }
+        
+        .item-text {
+            font-size: 15px;
+            color: var(--text);
+            line-height: 1.5;
+            font-weight: 400;
+        }
+        
+        .spectrum-item.empty .item-text {
+            color: var(--text-dim);
+            font-style: italic;
+        }
+        
+        .item-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 4px;
+        }
+        
+        .item-date {
+            font-size: 12px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .item-mood {
+            font-size: 11px;
+            padding: 2px 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            color: var(--item-color, var(--text-dim));
+        }
+        
+        /* Input Area (inline) */
+        .inline-input {
+            display: none;
+            padding: 16px 20px 20px;
+            background: var(--surface-active);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .spectrum-item.active .inline-input {
+            display: block;
+        }
+        
+        .input-type-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .type-btn {
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-dim);
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .type-btn:hover {
+            border-color: var(--border-active);
+            color: var(--text);
+        }
+        
+        .type-btn.active {
+            border-color: var(--item-color, #f4a261);
+            color: var(--item-color, #f4a261);
+            background: rgba(255,255,255,0.03);
+        }
+        
+        textarea {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            color: var(--text);
+            font-size: 15px;
+            line-height: 1.6;
+            resize: none;
+            min-height: 100px;
+            font-family: inherit;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--item-color, var(--border-active));
+        }
+        
+        .input-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+        
+        .live-gradient-preview {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .preview-bar {
+            width: 60px;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--preview-color, var(--border));
+            transition: all 0.3s ease;
+        }
+        
+        .preview-label {
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+        
+        .input-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-dim);
+        }
+        
+        .btn-ghost:hover {
+            color: var(--text);
+        }
+        
+        .btn-fill {
+            background: var(--item-color, #f4a261);
+            color: #0a0a0f;
+        }
+        
+        .btn-fill:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        /* Side Panel - Mini Gradient Overview */
+        .side-panel {
+            position: fixed;
+            right: 32px;
+            top: 100px;
+            width: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .mini-slice {
+            height: 8px;
+            border-radius: 2px;
+            background: var(--slice-color, var(--border));
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .mini-slice:hover {
+            transform: scaleX(1.2);
+        }
+        
+        .mini-slice.active {
+            box-shadow: 0 0 0 2px var(--text);
+        }
+        
+        /* FAB */
+        .fab {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff006e, #f4a261);
+            border: none;
+            color: white;
+            font-size: 28px;
+            font-weight: 300;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(244, 162, 97, 0.3);
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+        
+        .fab:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 30px rgba(244, 162, 97, 0.4);
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .modal-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            max-width: 480px;
+            width: 100%;
+            overflow: hidden;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            height: 100px;
+            background: var(--modal-color, #f4a261);
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.3);
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 24px;
+        }
+        
+        .modal-date {
+            font-size: 12px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        
+        .modal-text {
+            font-size: 17px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="brand">
+            <div class="brand-icon">◐</div>
+            <h1>Spectrum</h1>
+        </div>
+    </header>
+    
+    <main class="main">
+        <div class="container">
+            <div class="header-section">
+                <h2>Your moments</h2>
+                <p>Each entry adds color to your spectrum</p>
+            </div>
+            
+            <div class="spectrum-list" id="spectrumList">
+                <!-- Items generated by JS -->
+            </div>
+        </div>
+    </main>
+    
+    <!-- Side Mini Gradient -->
+    <div class="side-panel" id="sidePanel"></div>
+    
+    <!-- FAB -->
+    <button class="fab" onclick="jumpToToday()">+</button>
+    
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-header" id="modalHeader">
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-date" id="modalDate"></div>
+                <p class="modal-text" id="modalText"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate 30 days
+        const entries = [];
+        const today = new Date();
+        
+        const moodColors = [
+            { h: 340, name: 'Rose' },
+            { h: 25, name: 'Amber' },
+            { h: 45, name: 'Gold' },
+            { h: 160, name: 'Teal' },
+            { h: 200, name: 'Ocean' },
+            { h: 260, name: 'Violet' },
+        ];
+        
+        const sampleTexts = [
+            "Today felt light. Productive morning, good conversations.",
+            "Heavy day, but the sunset reminded me that endings are beautiful too.",
+            "Quiet. Just what I needed.",
+            "So much energy! Started something new.",
+            "Reflective. Thinking about where this is all going.",
+            "Connected. Deep talks with people I love.",
+            "Challenging. But I showed up anyway.",
+        ];
+        
+        for (let i = 29; i >= 0; i--) {
+            const date = new Date(today);
+            date.setDate(date.getDate() - i);
+            
+            if (Math.random() > 0.4 || i === 0) {
+                const mood = moodColors[Math.floor(Math.random() * moodColors.length)];
+                entries.push({
+                    id: date.getTime(),
+                    date: date,
+                    dateStr: formatDate(date),
+                    text: i === 0 ? '' : sampleTexts[Math.floor(Math.random() * sampleTexts.length)],
+                    color: `hsl(${mood.h}, 70%, 55%)`,
+                    colorName: mood.name,
+                    hasEntry: i !== 0
+                });
+            } else {
+                entries.push({
+                    id: Date.now() + i,
+                    date: date,
+                    dateStr: formatDate(date),
+                    text: '',
+                    hasEntry: false
+                });
+            }
+        }
+        
+        function formatDate(date) {
+            const now = new Date();
+            const diff = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+            
+            if (diff === 0) return 'Today';
+            if (diff === 1) return 'Yesterday';
+            if (diff < 7) return `${diff}d ago`;
+            
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        
+        let activeEntryId = null;
+        
+        // Render unified list
+        function renderList() {
+            const list = document.getElementById('spectrumList');
+            list.innerHTML = entries.map(entry => `
+                <div class="spectrum-item ${!entry.hasEntry ? 'empty' : ''} ${entry.id === activeEntryId ? 'active' : ''}" 
+                     data-id="${entry.id}"
+                     style="--item-color: ${entry.color || 'var(--border)'}"
+                     onclick="handleItemClick(${entry.id}, event)">
+                    
+                    <div class="item-gradient"></div>
+                    
+                    <div class="item-content-wrapper">
+                        <div class="item-main">
+                            <div class="item-text">${entry.text || 'Tap to add a note...'}</div>
+                            <div class="item-meta-row">
+                                <span class="item-date">${entry.dateStr}</span>
+                                ${entry.hasEntry ? `<span class="item-mood">${entry.colorName || 'Amber'}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="inline-input" onclick="event.stopPropagation()">
+                        <div class="input-type-bar">
+                            <button class="type-btn active" data-type="text">✍️ Text</button>
+                            <button class="type-btn" data-type="voice">🎙️ Voice</button>
+                            <button class="type-btn" data-type="photo">📸 Photo</button>
+                        </div>
+                        <textarea id="input-${entry.id}" placeholder="How did ${entry.dateStr.toLowerCase()} feel? What color would you give it?">${entry.text}</textarea>
+                        <div class="input-footer">
+                            <div class="live-gradient-preview">
+                                <div class="preview-bar" id="preview-${entry.id}"></div>
+                                <span class="preview-label" id="label-${entry.id}">Type to see color...</span>
+                            </div>
+                            <div class="input-actions">
+                                <button class="btn btn-ghost" onclick="closeInput()">Cancel</button>
+                                <button class="btn btn-fill" onclick="saveEntry(${entry.id})" style="background: ${entry.color || '#f4a261'}">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add input listeners
+            entries.forEach(entry => {
+                const textarea = document.getElementById(`input-${entry.id}`);
+                if (textarea) {
+                    textarea.addEventListener('input', (e) => {
+                        const color = analyzeText(e.target.value);
+                        updatePreview(entry.id, color);
+                    });
+                }
+            });
+            
+            // Type button listeners
+            document.querySelectorAll('.type-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    btn.parentElement.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+        }
+        
+        // Render side mini gradient
+        function renderSidePanel() {
+            const panel = document.getElementById('sidePanel');
+            panel.innerHTML = entries.map((entry, idx) => `
+                <div class="mini-slice ${entry.id === activeEntryId ? 'active' : ''}"
+                     style="--slice-color: ${entry.color || 'var(--border)'}"
+                     onclick="selectEntry(${entry.id})">
+                </div>
+            `).join('');
+        }
+        
+        function handleItemClick(id, event) {
+            if (event.target.closest('.inline-input')) return;
+            
+            const entry = entries.find(e => e.id === id);
+            if (entry.hasEntry) {
+                showModal(entry);
+            } else {
+                selectEntry(id);
+            }
+        }
+        
+        function selectEntry(id) {
+            activeEntryId = id;
+            renderList();
+            renderSidePanel();
+            
+            // Focus textarea
+            setTimeout(() => {
+                const textarea = document.getElementById(`input-${id}`);
+                if (textarea) textarea.focus();
+            }, 50);
+        }
+        
+        function closeInput() {
+            activeEntryId = null;
+            renderList();
+            renderSidePanel();
+        }
+        
+        function analyzeText(text) {
+            const lower = text.toLowerCase();
+            
+            if (lower.includes('love') || lower.includes('happy') || lower.includes('joy') || lower.includes('connected'))
+                return { color: 'hsl(340, 70%, 55%)', name: 'Rose' };
+            if (lower.includes('energy') || lower.includes('excited') || lower.includes('new') || lower.includes('fire'))
+                return { color: 'hsl(25, 75%, 50%)', name: 'Amber' };
+            if (lower.includes('calm') || lower.includes('peace') || lower.includes('quiet') || lower.includes('focus'))
+                return { color: 'hsl(160, 60%, 45%)', name: 'Teal' };
+            if (lower.includes('think') || lower.includes('reflect') || lower.includes('deep') || lower.includes('contemplate'))
+                return { color: 'hsl(260, 60%, 50%)', name: 'Violet' };
+            
+            return { color: 'hsl(45, 70%, 55%)', name: 'Gold' };
+        }
+        
+        function updatePreview(id, colorData) {
+            const bar = document.getElementById(`preview-${id}`);
+            const label = document.getElementById(`label-${id}`);
+            const saveBtn = document.querySelector(`#input-${id}`).closest('.inline-input').querySelector('.btn-fill');
+            
+            if (bar) bar.style.setProperty('--preview-color', colorData.color);
+            if (label) label.textContent = colorData.name;
+            if (saveBtn) saveBtn.style.background = colorData.color;
+        }
+        
+        function saveEntry(id) {
+            const entry = entries.find(e => e.id === id);
+            const textarea = document.getElementById(`input-${id}`);
+            const text = textarea.value.trim();
+            
+            if (!text) return;
+            
+            const colorData = analyzeText(text);
+            
+            entry.text = text;
+            entry.hasEntry = true;
+            entry.color = colorData.color;
+            entry.colorName = colorData.name;
+            
+            activeEntryId = null;
+            renderList();
+            renderSidePanel();
+        }
+        
+        function showModal(entry) {
+            document.getElementById('modalHeader').style.background = entry.color;
+            document.getElementById('modalDate').textContent = entry.date.toLocaleDateString('en-US', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+            document.getElementById('modalText').textContent = entry.text;
+            document.getElementById('modal').classList.add('active');
+        }
+        
+        function closeModal(e) {
+            if (!e || e.target.id === 'modal') {
+                document.getElementById('modal').classList.remove('active');
+            }
+        }
+        
+        function jumpToToday() {
+            const todayEntry = entries.find(e => e.dateStr === 'Today');
+            if (todayEntry) {
+                selectEntry(todayEntry.id);
+            }
+        }
+        
+        // Initialize
+        renderList();
+        renderSidePanel();
+    </script>
+</body>
+</html>
